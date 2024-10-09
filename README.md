@@ -21,3 +21,33 @@ This project aims to address the issue of black-market ticket resales at the Uni
 - Makenzie Jones: [MAKENZIE.E.JONES@UCONN.EDU](mailto:MAKENZIE.E.JONES@UCONN.EDU)
 - Luke Pepin: [LUKE.PEPIN@UCONN.EDU](mailto:LUKE.PEPIN@UCONN.EDU)
 - Tyler Wang: [TYLER.WANG@UCONN.EDU](mailto:TYLER.WANG@UCONN.EDU)
+=======
+# SDP45-BlockchainTicketing
+
+This template should help get you started developing with Vue 3 in Vite.
+
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
