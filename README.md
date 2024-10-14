@@ -15,6 +15,13 @@ This project aims to address the issue of black-market ticket resales at the Uni
 - **Secure Ticket Distribution**: Ensures tickets are distributed fairly and securely, even during high-demand periods.
 - **Administrative Control**: Only authorized administrators can transfer tickets, preventing unauthorized resales.
 
+### Technology Stack
+Our project uses the following key technologies:
+- **Frontend**: React (see our [technology decision matrix](./docs/technical-decisions.md#front-end-technology-decision-matrix) for details)
+- **Backend**: Node.js with Express
+- **Database**: PostgreSQL
+- **Blockchain**: Ethereum (Solidity)
+
 ### Contact Information
 - Matt Foley: [SEAN.M.FOLEY@UCONN.EDU](mailto:SEAN.M.FOLEY@UCONN.EDU)
 - Mohamad Hamadi: [MOHAMAD_ALI.HAMADI@UCONN.EDU](mailto:MOHAMAD_ALI.HAMADI@UCONN.EDU)
