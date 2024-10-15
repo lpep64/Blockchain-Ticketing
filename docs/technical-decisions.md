@@ -36,3 +36,6 @@ Note: Each cell contains the raw score (0-5) and the weighted score in parenthes
 
 ## Recommendation:
 Based on this weighted decision matrix, **React** is the most suitable choice for our project. Its high scores across all categories, particularly in performance, backend integration, and team familiarity, make it well-suited for developing our blockchain-based ticketing system's front-end.
+
+
+# Weighted Backend Technology Decision Matrix
