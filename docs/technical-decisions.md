@@ -1,15 +1,15 @@
-# Weighted Front-end Technology Decision Matrix
+# Weighted Frontend Technology Decision Matrix
 
 | Criteria (Weight)               | Vue          | React        | Angular      | Svelte       |
 |---------------------------------|--------------|--------------|--------------|--------------|
-| Ease of Use (20%)               | 5 (1.00)     | 4 (0.80)     | 3 (0.60)     | 5 (1.00)     |
-| Performance (15%)               | 5 (0.75)     | 5 (0.75)     | 4 (0.60)     | 5 (0.75)     |
-| Learning Curve (15%)            | 5 (0.75)     | 4 (0.60)     | 3 (0.45)     | 4 (0.60)     |
-| Flexibility (15%)               | 5 (0.75)     | 4 (0.60)     | 3 (0.45)     | 4 (0.60)     |
-| Integration with Backend (10%)  | 4 (0.40)     | 5 (0.50)     | 5 (0.50)     | 4 (0.40)     |
-| Build Size & Performance (10%)  | 5 (0.50)     | 4 (0.40)     | 3 (0.30)     | 5 (0.50)     |
-| Community Growth (10%)          | 4 (0.40)     | 5 (0.50)     | 4 (0.40)     | 3 (0.30)     |
-| Progressive Framework (5%)      | 5 (0.25)     | 3 (0.15)     | 4 (0.20)     | 3 (0.15)     |
+| Ease of Use (20%)               | 5            | 4            | 3            | 5            |
+| Performance (15%)               | 5            | 5            | 4            | 5            |
+| Learning Curve (15%)            | 5            | 4            | 3            | 4            |
+| Flexibility (15%)               | 5            | 4            | 3            | 4            |
+| Integration with Backend (10%)  | 4            | 5            | 5            | 4            |
+| Build Size & Performance (10%)  | 5            | 4            | 3            | 5            |
+| Community Growth (10%)          | 4            | 5            | 4            | 3            |
+| Progressive Framework (5%)      | 5            | 3            | 4            | 3            |
 |---------------------------------|--------------|--------------|--------------|--------------|
 | Total Weighted Score            | 4.80         | 4.30         | 3.50         | 4.30         |
 
