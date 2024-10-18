@@ -17,8 +17,8 @@ This project aims to address the issue of black-market ticket resales at the Uni
 
 ### Technology Stack
 Our project uses the following key technologies:
-- **Frontend**: React (see our [technology decision matrix](./docs/technical-decisions.md#front-end-technology-decision-matrix) for details)
-- **Backend**: Node.js with Express
+- **Frontend**: Vue (see our [technology decision matrix](./docs/technical-decisions.md#front-end-technology-decision-matrix) for details)
+- **Backend**: Google Cloud (see our [technology decision matrix](./docs/technical-decisions.md#front-end-technology-decision-matrix) for details)
 - **Database**: PostgreSQL
 - **Blockchain**: Ethereum (Solidity)
 
