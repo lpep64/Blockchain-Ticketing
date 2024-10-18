@@ -2,17 +2,18 @@
 
 #app {
   width: 100%;
-  margin: 0;
-  /* Remove margin */
+  margin: 0; 
   padding: 0;
-  /* Remove padding */
   font-weight: normal;
 }
 
 @media (min-width: 1024px) {
   body {
     display: flex;
-    place-items: center;
+    justify-content: center; 
+    align-items: flex-start; 
+    height: 100vh; 
+    margin: 0; 
   }
 
   #app {
@@ -20,6 +21,6 @@
     flex-direction: column;
     align-items: center;
     padding: 0;
-    /* Remove padding */
+    margin-top: 3rem;
   }
 }

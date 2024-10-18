@@ -51,7 +51,7 @@ const transferTicket = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
     color: #0C2340;
