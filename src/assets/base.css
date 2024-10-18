@@ -1,3 +1,32 @@
+@import './base.css';
+
+#app {
+  width: 100%;
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+  font-weight: normal;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: flex-start; /* Align content at the top vertically */
+    height: 100vh; /* Ensure body takes full viewport height */
+    margin: 0; /* Remove default margin */
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0; /* Remove padding */
+  }
+}
+
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
