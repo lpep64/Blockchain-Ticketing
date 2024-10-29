@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google-cloud/compute": "^4.7.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "vue": "^3.4.29",
     "vue-router": "^4.4.5"
   },
