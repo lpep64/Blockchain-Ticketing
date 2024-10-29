@@ -28,3 +28,17 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Brownie build artifacts
+build/
+reports/
+
+# Secrets
+.env
