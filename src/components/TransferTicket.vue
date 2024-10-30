@@ -45,7 +45,7 @@ const transferTicket = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
     color: #0C2340;
@@ -56,11 +56,9 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     position: relative;
-    top: 100px;
-    /* Adjust this value to set the distance from the top */
 }
 
 h1 {
