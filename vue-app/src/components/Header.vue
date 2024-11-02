@@ -16,7 +16,7 @@ header {
     color: #0C2340;
     padding: 1rem;
     width: 100%;
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
     display: flex;
