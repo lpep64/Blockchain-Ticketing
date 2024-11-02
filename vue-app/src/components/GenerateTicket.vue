@@ -56,6 +56,7 @@ const transferTicket = () => {
     background-color: #171717;
     color: #0C2340;
     text-align: center;
+    margin-top: 5rem;
 }
 
 h1 {
