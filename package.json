@@ -1,0 +1,19 @@
+{
+  "name": "sdp45-blockchainticketing",
+  "version": "1.0.0",
+  "description": "- Matt Foley\r - Mohamad Hamadi\r - Makenzie Jones\r - Luke Pepin\r - Tyler Wang",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
