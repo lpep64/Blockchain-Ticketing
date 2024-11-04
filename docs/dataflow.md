@@ -26,7 +26,7 @@ flowchart TB
 
     subgraph BlockchainStorage ["Blockchain Storage"]
         SmartContract["Smart Contract Data
-        - Hashed PeopleSoft ID (public information; maps to back end)
+        - Hashed NetID (public information; maps to back end)
         - Ticket ID
         - Event ID
         - Ticket Status
@@ -35,9 +35,9 @@ flowchart TB
 
     subgraph Database ["Off-Chain Database"]
         StudentData["Student Information (all hashed)
-        - PeopleSoft ID (maps to blockchain)
+        - NetID (maps to blockchain)
         - Full Name
-        - NetID
+        - PeopleSoft ID
         - UConn Email
         - Student Status
         - Transaction History"]
@@ -53,13 +53,13 @@ flowchart TB
 
     %% Student flows
     Student -->|"(1) Login with 
-    PeopleSoft ID + Password"| Auth
+    NetID + Password"| Auth
     Auth -->|"(2) Verify credentials"| StudentData
     Student -->|"(3) Request ticket for event"| TicketService
     
     %% Ticket processing
     TicketService -->|"(4) Store ticket data:
-    - Hashed IDs
+    - Hashed ID
     - Ticket details"| SmartContract
     
     TicketService -->|"(5) Store personal data:
