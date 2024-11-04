@@ -17,10 +17,11 @@ This project aims to address the issue of black-market ticket resales at the Uni
 
 ### Technology Stack
 Our project uses the following key technologies:
-- **Frontend**: Vue (see our [technology decision matrix](./docs/technical-decisions.md#front-end-technology-decision-matrix) for details)
-- **Backend**: Google Cloud (see our [technology decision matrix](./docs/technical-decisions.md#front-end-technology-decision-matrix) for details)
+- **Frontend**: Vue (see our [technology decision matrix](./docs/technical-decisions.md) for details)
+- **Backend**: Google Cloud (see our [technology decision matrix](./docs/technical-decisions.md) for details)
 - **Database**: PostgreSQL
 - **Blockchain**: Ethereum (Solidity)
+- **Data flow**: here is information about the [data flow](./docs/dataflow.md) of our project
 
 ### Contact Information
 - Matt Foley: [SEAN.M.FOLEY@UCONN.EDU](mailto:SEAN.M.FOLEY@UCONN.EDU)
