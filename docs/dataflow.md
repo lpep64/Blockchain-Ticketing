@@ -2,8 +2,8 @@
 flowchart TB
     subgraph UI ["User Interface"]
         Student["Student
-        - PeopleSoft ID
-        - UConn Email
+        - UConn Email/NetID
+        - Password
         - Student Status"]
         AdminUI["Admin Interface
         - Event Creation
@@ -12,8 +12,8 @@ flowchart TB
     end
 
     subgraph Processing ["Application Layer"]
-        Auth["Authentication Service (With Duo Mobile)
-        - Verifies UConn Credentials
+        Auth["Authentication Service (with Duo Mobile)
+        - Verifies UConn Credentials (netID and password)
         - Checks Student Status
         - Session Management"]
         
@@ -26,8 +26,7 @@ flowchart TB
 
     subgraph BlockchainStorage ["Blockchain Storage"]
         SmartContract["Smart Contract Data
-        - Hashed PeopleSoft ID
-        - Hashed Email
+        - Hashed PeopleSoft ID (public information; maps to back end)
         - Ticket ID
         - Event ID
         - Ticket Status
@@ -36,8 +35,9 @@ flowchart TB
 
     subgraph Database ["Off-Chain Database"]
         StudentData["Student Information (all hashed)
+        - PeopleSoft ID (maps to blockchain)
         - Full Name
-        - PeopleSoft ID
+        - NetID
         - UConn Email
         - Student Status
         - Transaction History"]
