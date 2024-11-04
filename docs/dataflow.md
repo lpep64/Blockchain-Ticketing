@@ -1,4 +1,3 @@
-'''mermaid
 flowchart TB
     subgraph UI ["User Interface"]
         Student["Student
@@ -79,4 +78,3 @@ flowchart TB
 
     classDef storage fill:#f9f,stroke:#333
     class SmartContract,StudentData,EventData storage
-'''
