@@ -5,8 +5,8 @@ import TransferTicket from './components/TransferTicket.vue'
 
 const routes = [
     { path: '/', component: GenerateTicket },
-    { path: '/transfer-ticket', component: TransferTicket },
     { path: '/generate-ticket', component: GenerateTicket },
+    { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
 const router = createRouter({

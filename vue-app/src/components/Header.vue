@@ -4,10 +4,14 @@
         <div class="title-wrapper">
             <h1>Senior Design Project Team 45 - Blockchain Ticketing</h1>
         </div>
+        <button @click="redirectToAuth" class="login-button">Login</button>
     </header>
 </template>
 
 <script setup>
+const redirectToAuth = () => {
+    window.location.href = "https://blockchainticketing.ue.r.appspot.com/authenticate-user.php";
+};
 </script>
 
 <style scoped>
@@ -42,6 +46,20 @@ h1 {
     font-weight: 700;
     margin: 0;
     text-align: center;
+}
+
+.login-button {
+    background-color: #0C2340;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+.login-button:hover {
+    background-color: #0A1E30;
 }
 
 /* Media query for mobile devices */
