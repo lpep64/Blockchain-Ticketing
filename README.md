@@ -59,3 +59,9 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Updating gcloud instance
+
+```sh
+gcloud app deploy
+```
