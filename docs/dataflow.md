@@ -38,8 +38,7 @@ flowchart TB
         - Full Name
         - PeopleSoft ID
         - UConn Email
-        - Student Status
-        - Transaction History"]
+        - Student Status"]
         
         EventData["Event Information (all hashed)
         - Event ID
