@@ -29,8 +29,7 @@ flowchart TB
         - Hashed NetID (public information; maps to back end)
         - Ticket ID
         - Event ID
-        - Ticket Status
-        - Timestamp"]
+        - Seating Information"]
     end
 
     subgraph Database ["Off-Chain Database"]
@@ -72,9 +71,7 @@ flowchart TB
     
     %% Verification flow
     Student -->|"(6) Present ticket"| TicketService
-    TicketService -->|"(7) Verify:
-    - Ticket validity
-    - Student identity"| SmartContract
+    TicketService -->|"(7) Verify student identity"| SmartContract
     TicketService -->|"(8) Confirm student status"| StudentData
 
     classDef storage fill:#f9f,stroke:#333
