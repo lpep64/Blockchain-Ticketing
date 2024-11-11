@@ -9,11 +9,35 @@ const seatid = ref('')
 
 const router = useRouter()
 
-const submitForm = () => {
+const submitForm = async () => {
     console.log('NetID:', netid.value)
     console.log('EventID:', eventid.value)
     console.log('SeatID:', seatid.value)
-    // Add your form submission logic here
+    
+    // FORM SUBMISSION LOGIC
+    try {
+        const response = await fetch('/api/tickets/claim', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                netID: netid.value,
+                eventID: eventid.value,
+                seatID: seatid.value || null
+            })
+        })
+        const data = await response.json()
+
+        if (data.ticketID) {
+            ticketID.value = data.ticketID // Display ticket ID
+        } else {
+            errorMessage.value = data.error || 'Error claiming ticket'
+        }
+    } catch (error) {
+        console.error('Error:', error)
+        errorMessage.value = 'An error occurred while claiming the ticket'
+    }
+    // END LOGIC
+
 }
 
 const transferTicket = () => {
