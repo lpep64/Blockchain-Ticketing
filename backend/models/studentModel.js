@@ -1,5 +1,3 @@
-// STUDENT DATA MODEL
-
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
@@ -10,6 +8,4 @@ const studentSchema = new mongoose.Schema({
   status: { type: String, required: true }
 });
 
-const Student = mongoose.model('Student', studentSchema);
-
-module.exports = Student;
+module.exports = mongoose.model('Student', studentSchema);
