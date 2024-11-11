@@ -1,3 +1,4 @@
+<!-- Makenzie Jones -->
 # Weighted Frontend Technology Decision Matrix
 
 | Criteria (Weight)               | Vue          | React        | Angular      | Svelte       |
@@ -43,6 +44,7 @@ The ability to incrementally adopt Vue features aligns well with the potentially
 
 
 
+<!-- Matt Foley -->
 # Weighted Backend Technology Decision Matrix
 
 | Criteria (Weight)                       | AWS | Google Cloud | Microsoft Azure  | Local Machines | Creating own server       |
