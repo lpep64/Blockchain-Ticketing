@@ -6,17 +6,17 @@ pragma solidity ^0.8.0;
 
 contract TicketingSystem {
     uint256 public ticketCount;
-    mapping(address => uint256) public tickets;
+    mapping(bytes32 => uint256) public tickets;
 
-    event TicketGenerated(address indexed user, uint256 ticketId);
+    event TicketGenerated(bytes32 indexed hashedNetID, uint256 ticketId);
 
-    function generateTicket() public {
+    function generateTicket(bytes32 hashedNetID) public {
         ticketCount += 1;
-        tickets[msg.sender] = ticketCount;
-        emit TicketGenerated(msg.sender, ticketCount);
+        tickets[hashedNetID] = ticketCount;
+        emit TicketGenerated(hashedNetID, ticketCount);
     }
 
-    function getTicket(address user) public view returns (uint256) {
-        return tickets[user];
+    function getTicket(bytes32 hashedNetID) public view returns (uint256) {
+        return tickets[hashedNetID];
     }
 }

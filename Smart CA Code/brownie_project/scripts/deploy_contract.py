@@ -1,3 +1,4 @@
+import time
 from brownie import TicketingSystem, accounts
 
 def main():
@@ -9,3 +10,4 @@ def main():
     
     # Output the contract address
     print(f"Contract deployed at address: {contract.address}")
+
