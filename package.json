@@ -14,6 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/compute": "^4.7.0",
+    "axios": "^1.7.7",
     "express": "^4.21.1",
     "web3": "^4.14.0"
   }

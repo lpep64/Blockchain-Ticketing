@@ -15,7 +15,7 @@ const location = 'us-central1';
 function makeNodes(count){
   for (let i = 1; i <= count; i++) {
     const nodeName = 'Node-' + i; //nodename formated as 'Node-n' where n is node numebr
-    const url1 = `https://blockchainnodeengine.googleapis.com/v1/projects/${projectId}/locations/${location}/blockchainNodes?blockchain_node_id=${nodeName}`; //google cloud api request
+    const url = `https://blockchainnodeengine.googleapis.com/v1/projects/${projectId}/locations/${location}/blockchainNodes?blockchain_node_id=${nodeName}`; //google cloud api request
     const request_data = {
       blockchainType: "ETHEREUM",
       privateServiceConnectEnabled: false,
@@ -46,4 +46,3 @@ function makeNodes(count){
   }
 };
 
-module.exports = makeNodes;
