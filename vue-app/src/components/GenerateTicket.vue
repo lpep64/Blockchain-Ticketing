@@ -6,38 +6,58 @@ import Header from './Header.vue'
 const netid = ref('')
 const eventid = ref('')
 const seatid = ref('')
+const notificationMessage = ref('') // Handles notification text
+const showModal = ref(false) // Controls modal visibility
 
 const router = useRouter()
 
 const submitForm = async () => {
-    console.log('NetID:', netid.value)
-    console.log('EventID:', eventid.value)
-    console.log('SeatID:', seatid.value)
-    
-    // FORM SUBMISSION LOGIC
-    try {
-        const response = await fetch('/api/tickets/claim', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                netID: netid.value,
-                eventID: eventid.value,
-                seatID: seatid.value || null
-            })
-        })
-        const data = await response.json()
+    console.log('NetID:', netid.value);
+    console.log('EventID:', eventid.value);
+    console.log('SeatID:', seatid.value);
 
-        if (data.ticketID) {
-            ticketID.value = data.ticketID // Display ticket ID
+    try {
+        const cloudRunURL = 'https://generateticket-610385862744.us-central1.run.app';
+
+        const response = await fetch(cloudRunURL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                // 'Authorization': `Bearer ${yourToken}` // Uncomment and set your token if needed
+            },
+            body: JSON.stringify({
+                netID: netid.value.trim(),
+                eventID: eventid.value.trim(),
+                seatID: seatid.value ? seatid.value.trim() : null
+            })
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                if (data.ticketID) {
+                    notificationMessage.value = `Ticket generated successfully! Ticket ID: ${data.ticketID}`;
+                } else {
+                    notificationMessage.value = 'Ticket claimed successfully, but no Ticket ID was returned.';
+                }
+            } catch (error) {
+                console.warn('Response is not JSON:', error);
+                notificationMessage.value = 'Ticket claimed successfully. No additional information was returned.';
+            }
         } else {
-            errorMessage.value = data.error || 'Error claiming ticket'
+            notificationMessage.value = `Error: ${response.status} ${response.statusText}`;
         }
     } catch (error) {
-        console.error('Error:', error)
-        errorMessage.value = 'An error occurred while claiming the ticket'
+        console.error('Network or Server Error:', error);
+        notificationMessage.value = 'An error occurred while claiming the ticket. Please try again later.';
     }
-    // END LOGIC
 
+    showModal.value = true;
+};
+
+
+const closeModal = () => { 
+    showModal.value = false
 }
 
 const transferTicket = () => {
@@ -66,6 +86,14 @@ const transferTicket = () => {
                 <button type="submit">Generate Ticket</button>
             </form>
             <button @click="transferTicket" class="transfer-button">Transfer Existing Ticket</button>
+            
+            <!-- Modal -->
+            <div v-if="showModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" @click="closeModal">&times;</span>
+                    <p>{{ notificationMessage }}</p>
+                </div>
+            </div>
         </main>
     </div>
 </template>
@@ -142,5 +170,34 @@ button:hover {
 
 .transfer-button:hover {
     background-color: #0A1E30;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
 }
 </style>
