@@ -3,19 +3,56 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
 
+// State variables
 const OldNetID = ref('')
 const NewNetID = ref('')
+const notificationMessage = ref('') // For feedback messages
+const showModal = ref(false)        // Controls modal visibility
 
 const router = useRouter()
 
-const submitForm = () => {
+// Submit form logic
+const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
-    // Add your form submission logic here
+
+    try {
+        // API request to transfer ticket
+        const response = await fetch('https://generateticket-610385862744.us-central1.run.app/transfer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                oldNetID: OldNetID.value.trim(),
+                newNetID: NewNetID.value.trim(),
+            }),
+        })
+
+        if (response.ok) {
+            const data = await response.json()
+            console.log('Response data:', data)
+            notificationMessage.value = `Ticket successfully transferred! Confirmation ID: ${data.confirmationID}`
+        } else {
+            const errorData = await response.json()
+            console.error('Error response:', errorData)
+            notificationMessage.value = `Error: ${errorData.message || 'Failed to transfer ticket.'}`
+        }
+    } catch (error) {
+        console.error('Network or fetch error:', error)
+        notificationMessage.value = 'An error occurred. Please try again later.'
+    }
+
+    // Show modal with feedback
+    showModal.value = true
 }
 
+// Close the modal
+const closeModal = () => {
+    showModal.value = false
+}
+
+// Navigate to ticket generation
 const transferTicket = () => {
-    router.push('/generate-ticket') // Use router to navigate
+    router.push('/generate-ticket') // Navigate to the "Generate Ticket" page
 }
 </script>
 
@@ -36,6 +73,14 @@ const transferTicket = () => {
                 <button type="submit">Transfer Ticket</button>
             </form>
             <button @click="transferTicket" class="transfer-button">Generate New Tickets</button>
+
+            <!-- Modal for feedback -->
+            <div v-if="showModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" @click="closeModal">&times;</span>
+                    <p>{{ notificationMessage }}</p>
+                </div>
+            </div>
         </main>
     </div>
 </template>
@@ -112,5 +157,33 @@ button:hover {
 
 .transfer-button:hover {
     background-color: #0A1E30;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #000;
 }
 </style>
