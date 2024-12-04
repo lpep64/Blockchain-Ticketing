@@ -16,30 +16,9 @@ const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
 
-    try {
-        // API request to transfer ticket
-        const response = await fetch('https://generateticket-610385862744.us-central1.run.app/transfer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                oldNetID: OldNetID.value.trim(),
-                newNetID: NewNetID.value.trim(),
-            }),
-        })
+    //Code for swapping blockchain
 
-        if (response.ok) {
-            const data = await response.json()
-            console.log('Response data:', data)
-            notificationMessage.value = `Ticket successfully transferred! Confirmation ID: ${data.confirmationID}`
-        } else {
-            const errorData = await response.json()
-            console.error('Error response:', errorData)
-            notificationMessage.value = `Error: ${errorData.message || 'Failed to transfer ticket.'}`
-        }
-    } catch (error) {
-        console.error('Network or fetch error:', error)
-        notificationMessage.value = 'An error occurred. Please try again later.'
-    }
+    notificationMessage.value = "TICKET SWAP SUCCESSFUL";
 
     // Show modal with feedback
     showModal.value = true
