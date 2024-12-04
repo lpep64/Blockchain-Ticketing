@@ -1,17 +1,39 @@
 <template>
-    <header>
-        <img src="@/assets/uconn_huskies_logo_alternate.png" alt="UConn Huskies Logo" class="logo" />
-        <div class="title-wrapper">
-            <h1>Senior Design Project Team 45 - Blockchain Ticketing</h1>
-        </div>
-        <button @click="redirectToAuth" class="login-button">Login</button>
-    </header>
+  <header>
+    <img src="@/assets/uconn_huskies_logo_alternate.png" alt="UConn Huskies Logo" class="logo" />
+    <div class="title-wrapper">
+      <h1>Senior Design Project Team 45 - Blockchain Ticketing</h1>
+    </div>
+    <button v-if="!netID" @click="redirectToAuth" class="login-button">Login</button>
+    <div v-else class="user-info">
+      <h2>Welcome, {{ netID }}</h2>
+      <button @click="logout" class="logout-button">Logout</button>
+    </div>
+  </header>
 </template>
 
 <script setup>
-const redirectToAuth = () => {
-    window.location.href = "https://blockchainticketing.ue.r.appspot.com/authenticate-user.php";
+import { ref, onMounted } from "vue";
+
+const netID = ref(null);
+
+const getNetIDFromCookie = () => {
+  const cookies = document.cookie.split("; ");
+  const netIDCookie = cookies.find((cookie) => cookie.startsWith("netID="));
+  return netIDCookie ? netIDCookie.split("=")[1] : null;
 };
+
+const redirectToAuth = () => {
+  window.location.href = "/login";
+};
+
+const logout = () => {
+  window.location.href = "/logout";
+};
+
+onMounted(() => {
+  netID.value = getNetIDFromCookie();
+});
 </script>
 
 <style scoped>
@@ -47,8 +69,13 @@ h1 {
     margin: 0;
     text-align: center;
 }
-
-.login-button {
+h2 {
+    font-weight: 350;
+    font-size: larger;
+    margin: 0;
+    text-align: center;
+}
+.login-button, .logout-button {
     background-color: #0C2340;
     color: #ffffff;
     padding: 0.5rem 1rem;
@@ -58,9 +85,10 @@ h1 {
     margin-left: 1rem;
 }
 
-.login-button:hover {
+.login-button:hover, .logout-button:hover {
     background-color: #0A1E30;
 }
+
 
 /* Media query for mobile devices */
 @media (max-width: 768px) {

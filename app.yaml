@@ -1,13 +1,8 @@
 runtime: nodejs20
 env: standard
 handlers:
-  - url: /
-    static_files: vue-app/dist/index.html
-    upload: vue-app/dist/index.html
   - url: /static
     static_dir: vue-app/dist
-  - url: /authenticate-user.php
-    script: /vue-app/authenticate-user.php
   - url: /.*
     static_files: vue-app/dist/index.html
     upload: vue-app/dist/index.html
