@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 8080;
 
 // CAS
 const UCONN_CAS = "https://login.uconn.edu/cas";
-const SERVICE_URL = `http://localhost:${PORT}/login/callback`; 
+const SERVICE_URL = process.env.SERVICE_URL || `http://localhost:${PORT}/login/callback`;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,9 +17,8 @@ const __dirname = path.dirname(__filename);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "vue-app/dist")));
 
-
 function requireAuth(req, res, next) {
-  const netID = req.cookies.netID; 
+  const netID = req.cookies.netID;
   if (netID) {
     next();
   } else {
@@ -48,12 +47,13 @@ app.get("/login/callback", async (req, res) => {
     }
   } catch (error) {
     console.error("Error validating ticket:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
 app.get("/logout", (req, res) => {
   res.clearCookie("netID");
-  const logoutUrl = `${UCONN_CAS}/logout?service=${encodeURIComponent("http://localhost:8080")}`;
+  const logoutUrl = `${UCONN_CAS}/logout?service=${encodeURIComponent(process.env.SERVICE_URL || "http://localhost:8080")}`;
   res.redirect(logoutUrl);
 });
 

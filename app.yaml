@@ -1,8 +1,12 @@
 runtime: nodejs20
 env: standard
+instance_class: F2
+
 handlers:
-  - url: /static
-    static_dir: vue-app/dist
-  - url: /.*
+  - url: /
     static_files: vue-app/dist/index.html
     upload: vue-app/dist/index.html
+  - url: /(.*)
+    static_files: vue-app/dist/\1
+    upload: vue-app/dist/(.*)
+    mime_type: application/javascript

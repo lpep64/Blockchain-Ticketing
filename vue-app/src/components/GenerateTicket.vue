@@ -16,7 +16,8 @@ const submitForm = async () => {
     console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
 
-    //Code for generating new blockchain
+    //TODO: Code for generating new blockchain
+
 
     notificationMessage.value = "IF I HAD A TICKET THIS IS WHERE I WOULD PUT IT";
     showModal.value = true;

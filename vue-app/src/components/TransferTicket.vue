@@ -16,7 +16,8 @@ const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
 
-    //Code for swapping blockchain
+    //TODO: Code for swapping blockchain
+
 
     notificationMessage.value = "TICKET SWAP SUCCESSFUL";
 
@@ -53,7 +54,7 @@ const transferTicket = () => {
             </form>
             <button @click="transferTicket" class="transfer-button">Generate New Tickets</button>
 
-            <!-- Modal for feedback -->
+            <!-- Modal -->
             <div v-if="showModal" class="modal">
                 <div class="modal-content">
                     <span class="close" @click="closeModal">&times;</span>
@@ -148,6 +149,7 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
@@ -155,14 +157,14 @@ button:hover {
     padding: 2rem;
     border-radius: 8px;
     text-align: center;
+    position: relative;
 }
 
 .close {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
+    top: 0.5rem;
+    right: 0.5rem;
     cursor: pointer;
-    color: #000;
+    font-size: 1.5rem;
 }
 </style>
