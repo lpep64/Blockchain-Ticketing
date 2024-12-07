@@ -3,6 +3,11 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import getNodeInfo from './backend/blockchain/getNodeInfo.js'
+
+// Get node info before anything else
+await getNodeInfo();
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;

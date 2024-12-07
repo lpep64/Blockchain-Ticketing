@@ -53,13 +53,13 @@ async function getNodeInfo(){
         fileData.nodeEndpoints[`Node-${i+1}`].websocketsApiEndpoint = endpoints[i].socket
     }
 
-    fs.writeFile('backend/blockchain/networkInfo.json', JSON.stringify(fileData, null, 2), (err) => {
+    await fs.writeFile('backend/blockchain/networkInfo.json', JSON.stringify(fileData, null, 2), (err) => {
         if (err) {
           console.error('Error writing to networkInfo.json file:', err);
         }
       });
 
     console.log('Information Received and Logged.')
-}
+};
 
-getNodeInfo();
+export default getNodeInfo;

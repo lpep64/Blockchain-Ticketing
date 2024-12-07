@@ -70,5 +70,4 @@ async function makeNodes(){
   }
 };
 
-makeNodes(); 
-//export default makeNodes;
+export default makeNodes;
