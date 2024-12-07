@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+import callWithFailover from 'backend/blockchain/nodeInterface.js'
+import crypto from 'crypto'
 
 const netid = ref('')
 const eventid = ref('')
@@ -16,7 +18,14 @@ const submitForm = async () => {
     console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
 
-    //TODO: Code for generating new blockchain
+    // Hash netID
+    const hashedID = crypto.createHash('sha256').update(netID.value).digest('hex');
+    try {
+        await callWithFailover('generateTicket', hashedID);
+        console.log(`Ticket Successfully generated for netID:${netID.value}`);
+    } catch (error) {
+        console.log('Failed to generate ticket');
+    }
 
 
     notificationMessage.value = "IF I HAD A TICKET THIS IS WHERE I WOULD PUT IT";
