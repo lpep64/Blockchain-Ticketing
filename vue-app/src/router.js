@@ -7,7 +7,10 @@ const routes = [
     { path: '/', component: GenerateTicket },
     { path: '/generate-ticket', component: GenerateTicket },
     { path: '/transfer-ticket', component: TransferTicket },
-    { path: '/:pathMatch(.*)*', redirect: '/' },
+    { path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: () => import('./components/NotFound.vue'),
+    },
 ]
 
 const router = createRouter({
