@@ -1,8 +1,16 @@
 runtime: nodejs20
 env: standard
+env_variables:
+  SERVICE_URL: "https://blockchainticketing.ue.r.appspot.com/login/callback"
 handlers:
-  - url: /static
-    static_dir: vue-app/dist
-  - url: /.*
+  - url: /login
+    script: auto
+  - url: /logout
+    script: auto
+  - url: /login/callback
+    script: auto
+  - url: /
     static_files: vue-app/dist/index.html
     upload: vue-app/dist/index.html
+  - url: /
+    static_dir: vue-app/dist
