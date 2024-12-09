@@ -17,7 +17,6 @@ const __dirname = path.dirname(__filename);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "vue-app/dist")));
 
-
 function requireAuth(req, res, next) {
   const netID = req.cookies.netID; 
   if (netID) {
