@@ -13,8 +13,8 @@ const router = useRouter()
 
 const submitForm = async () => {
     console.log('NetID:', netid.value);
-    console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
+    console.log('EventID:', eventid.value);
 
     // Hash netID
     const hashedNetID = Web3.utils.keccak256(netid.value);
@@ -51,12 +51,12 @@ const transferTicket = () => {
                     <input type="text" id="netid" v-model="netid" required />
                 </div>
                 <div class="form-group">
-                    <label for="eventid">Event ID:</label>
-                    <input type="text" id="eventid" v-model="eventid" required />
-                </div>
-                <div class="form-group">
                     <label for="seatid">Seat ID (Optional):</label>
                     <input type="text" id="seatid" v-model="seatid" />
+                </div>
+                <div class="form-group">
+                    <label for="eventid">Event ID:</label>
+                    <input type="text" id="eventid" v-model="eventid" required />
                 </div>
                 <button type="submit">Generate Ticket</button>
             </form>
