@@ -3,10 +3,11 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import getNodeInfo from './backend/blockchain/getNodeInfo.js'
+// import getNodeInfo from './backend/blockchain/getNodeInfo.js'
+import callWithFailover from './backend/blockchain/nodeInterface.js'
 
 // Get node info before anything else
-await getNodeInfo();
+// await getNodeInfo();
 
 
 const app = express();
@@ -30,6 +31,44 @@ function requireAuth(req, res, next) {
     res.redirect("/login");
   }
 }
+
+// API Routes for ticket interaction
+app.post("/api/generate-ticket", (req, res) => {
+  console.log('generateAIPCalled');
+  const { netID, eventID, seatInfo } = req.body;  // Destructure from the request body
+
+  if (!netID || !eventID || !seatInfo) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    const hashedNetID = Web3.utils.keccak256(netid.value);
+    callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
+    res.status(200).send("Ticket generated successfully.");
+  } catch (error) {
+    console.error("Error generating ticket:", error);
+    res.status(500).send("Error generating ticket.");
+  }
+});
+
+// API Route for transfering ticket
+app.post("/api/transfer-ticket", (req, res) => {
+  const { SendernetID, ReceiverNetID, eventID } = req.body;  // Destructure from the request body
+
+  if (!SendernetID || !ReceiverNetID || !eventID) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    const hashedSenderNetID = Web3.utils.keccak256(netid.value);
+    const hashedReceiverNetID = Web3.utils.keccak256(netid.value);
+    callWithFailover('transferTicket', hashedSenderNetID, hashedReceiverNetID, eventID);  // Call the backend function
+    res.status(200).send("Ticket generated successfully.");
+  } catch (error) {
+    console.error("Error generating ticket:", error);
+    res.status(500).send("Error generating ticket.");
+  }
+});
 
 app.get("/login", (req, res) => {
   const loginUrl = `${UCONN_CAS}/login?service=${encodeURIComponent(SERVICE_URL)}`;

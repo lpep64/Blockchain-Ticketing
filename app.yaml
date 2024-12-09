@@ -10,3 +10,7 @@ handlers:
     static_files: vue-app/dist/\1
     upload: vue-app/dist/(.*)
     mime_type: application/javascript
+  - url: /api/generate-ticket
+    script: auto
+  - url: /api/transfer-ticket
+    script: auto

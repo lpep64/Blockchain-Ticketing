@@ -2,8 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
-import callWithFailover from '@backend/blockchain/nodeInterface.js'
-import Web3 from 'web3'
+import axios from 'axios';
 
 const netid = ref('')
 const eventid = ref('')
@@ -18,14 +17,12 @@ const submitForm = async () => {
     console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
 
-    // Hash netID
-    const hashedNetID = Web3.utils.keccak256(netid.value);
-    try {
-        await callWithFailover('generateTicket', hashedNetID, parseInt(eventid.value, 10), string(seatid.value));
-        console.log(`Ticket Successfully generated for netID:${netID.value}`);
-    } catch (error) {
-        console.log('Failed to generate ticket');
-    }
+    const response = await axios.post('/api/generate-ticket', {
+        netID: netid.value,
+        eventid: eventid.value,
+        seatInfo: this.seatInfo
+    });
+    console.log('Ticket Generation API response: ', response);
 
 
     notificationMessage.value = "IF I HAD A TICKET THIS IS WHERE I WOULD PUT IT";
