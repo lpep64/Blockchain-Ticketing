@@ -25,7 +25,7 @@ const submitForm = async () => {
     });
     console.log('transfer response: ', response);
 
-    notificationMessage.value = "TICKET SWAP SUCCESSFUL";
+    notificationMessage.value = "Transaction proccessing check back in a few minuets";
 
     // Show modal with feedback
     showModal.value = true

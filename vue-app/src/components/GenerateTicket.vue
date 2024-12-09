@@ -19,13 +19,13 @@ const submitForm = async () => {
 
     const response = await axios.post('/api/generate-ticket', {
         netID: netid.value,
-        eventid: eventid.value,
-        seatInfo: this.seatInfo
+        eventID: eventid.value,
+        seatInfo: seatid.value
     });
     console.log('Ticket Generation API response: ', response);
 
 
-    notificationMessage.value = "IF I HAD A TICKET THIS IS WHERE I WOULD PUT IT";
+    notificationMessage.value = "Transaction proccessing check back in a few minuets";
     showModal.value = true;
 };
 

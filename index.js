@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 // import getNodeInfo from './backend/blockchain/getNodeInfo.js'
 import callWithFailover from './backend/blockchain/nodeInterface.js'
+import Web3 from 'web3';
 
 // Get node info before anything else
 // await getNodeInfo();
@@ -20,6 +21,7 @@ const SERVICE_URL = process.env.SERVICE_URL || `http://localhost:${PORT}/login/c
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "vue-app/dist")));
 
@@ -35,14 +37,18 @@ function requireAuth(req, res, next) {
 // API Routes for ticket interaction
 app.post("/api/generate-ticket", (req, res) => {
   console.log('generateAIPCalled');
-  const { netID, eventID, seatInfo } = req.body;  // Destructure from the request body
+  console.log(req.body);
+  const netID = req.body.netID;
+  const eventID = req.body.eventID;
+  const seatInfo = req.body.seatInfo;
+  console.log(netID)
 
   if (!netID || !eventID || !seatInfo) {
     return res.status(400).send("Missing parameters.");
   }
 
   try {
-    const hashedNetID = Web3.utils.keccak256(netid.value);
+    const hashedNetID = Web3.utils.keccak256(netID);
     callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
     res.status(200).send("Ticket generated successfully.");
   } catch (error) {
@@ -53,17 +59,20 @@ app.post("/api/generate-ticket", (req, res) => {
 
 // API Route for transfering ticket
 app.post("/api/transfer-ticket", (req, res) => {
-  const { SendernetID, ReceiverNetID, eventID } = req.body;  // Destructure from the request body
+  console.log('transferAPICalled')
+  const SendernetID = req.body.SendernetID;
+  const eventID = 100;
+  const ReceiverNetID = req.body.ReceiverNetID;
 
-  if (!SendernetID || !ReceiverNetID || !eventID) {
+  if (!SendernetID || !ReceiverNetID) {
     return res.status(400).send("Missing parameters.");
   }
 
   try {
-    const hashedSenderNetID = Web3.utils.keccak256(netid.value);
-    const hashedReceiverNetID = Web3.utils.keccak256(netid.value);
+    const hashedSenderNetID = Web3.utils.keccak256(SendernetID);
+    const hashedReceiverNetID = Web3.utils.keccak256(ReceiverNetID);
     callWithFailover('transferTicket', hashedSenderNetID, hashedReceiverNetID, eventID);  // Call the backend function
-    res.status(200).send("Ticket generated successfully.");
+    res.status(200).send("Ticket transfered successfully.");
   } catch (error) {
     console.error("Error generating ticket:", error);
     res.status(500).send("Error generating ticket.");
