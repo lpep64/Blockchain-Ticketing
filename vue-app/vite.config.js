@@ -1,8 +1,8 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
   plugins: [
@@ -10,7 +10,18 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@backend': path.resolve(__dirname, '../backend'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: [path.resolve(__dirname, '../backend/blockchain/nodeInterface.js')],
+    },
+  },
+  server: {
+    fs: {
+      allow: ['..'],
+    },
+  },
 });

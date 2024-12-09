@@ -1,10 +1,10 @@
 {
   "nodeCount": 1,
-  "nodeEndpoints":{
-    "Node-1":{
+  "nodeEndpoints": {
+    "Node-1": {
       "jsonRpcApiEndpoint": "json-rpc.d67d24ols721pc7g84d3cibpx.blockchainnodeengine.com",
       "websocketsApiEndpoint": "ws.d67d24ols721pc7g84d3cibpx.blockchainnodeengine.com"
     }
   },
-  "contractAddress": "0x19e0a74db3076f6c3623e6fefd8d4c5afa5ac8ca" 
+  "contractAddress": "0x19e0a74db3076f6c3623e6fefd8d4c5afa5ac8ca"
 }

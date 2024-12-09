@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
-import callWithFailover from 'backend/blockchain/nodeInterface.js'
+import callWithFailover from '@backend/blockchain/nodeInterface.js'
 import Web3 from 'web3'
 
 // State variables

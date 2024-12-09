@@ -38,7 +38,7 @@ const ticketContracts = web3Nodes.map(web3 => new web3.eth.Contract(contractABI,
 
 // Calls a falls a method (given by methodName) on the smart contracts stored in the nodes
 // If one node fails to be connected to for whatever reason it moves on to the next one
-async function callWithFailover(methodName, ...args) {
+export async function callWithFailover(methodName, ...args) {
     const senderAccount = account;
     for (let i = 0; i < ticketContracts.length; i++) {
         try {
