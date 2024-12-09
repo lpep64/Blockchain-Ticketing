@@ -3,11 +3,6 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import getNodeInfo from './backend/blockchain/getNodeInfo.js'
-
-// Get node info before anything else
-await getNodeInfo();
-
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -22,8 +17,9 @@ const __dirname = path.dirname(__filename);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "vue-app/dist")));
 
+
 function requireAuth(req, res, next) {
-  const netID = req.cookies.netID;
+  const netID = req.cookies.netID; 
   if (netID) {
     next();
   } else {
@@ -48,19 +44,20 @@ app.get("/login/callback", async (req, res) => {
       res.cookie("netID", netID);
       res.redirect("/");
     } else {
-      res.status(401).send("CAS authentication failed.");
+      res.redirect("/");
     }
   } catch (error) {
     console.error("Error validating ticket:", error);
-    res.status(500).send("Internal Server Error");
   }
 });
 
 app.get("/logout", (req, res) => {
   res.clearCookie("netID");
-  const logoutUrl = `${UCONN_CAS}/logout?service=${encodeURIComponent(process.env.SERVICE_URL || "http://localhost:8080")}`;
+  const logoutUrl = `${UCONN_CAS}/logout?service=${encodeURIComponent(process.env.SERVICE_URL || `http://localhost:${PORT}`)}`;
   res.redirect(logoutUrl);
 });
+
+
 
 app.get("*", requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "vue-app/dist", "index.html"));

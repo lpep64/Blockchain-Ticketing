@@ -2,8 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
-import callWithFailover from 'backend/blockchain/nodeInterface.js'
-import Web3 from 'web3'
 
 // State variables
 const OldNetID = ref('')
@@ -17,6 +15,7 @@ const router = useRouter()
 const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
+    console.log('EventID:', eventid.value);
 
     const hashedSenderNetID = Web3.utils.keccak256(OldNetID.value);
     const hashedReceiverNetID = Web3.utils.keccak256(NewNetID.value);
@@ -58,6 +57,10 @@ const transferTicket = () => {
                 <div class="form-group">
                     <label for="NewNetID">New NetID:</label>
                     <input type="text" id="NewNetID" v-model="NewNetID" required />
+                </div>
+                <div class="form-group">
+                    <label for="eventid">Event ID:</label>
+                    <input type="text" id="eventid" v-model="eventid" required />
                 </div>
                 <button type="submit">Transfer Ticket</button>
             </form>
