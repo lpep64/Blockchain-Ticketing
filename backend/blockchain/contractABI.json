@@ -3,27 +3,86 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "hashedNetID",
-        "type": "bytes32"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "ticketId",
+        "name": "eventId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "seatInfo",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "owner",
+        "type": "bytes32"
       }
     ],
     "name": "TicketGenerated",
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "sender",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "newOwner",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "eventId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "seatInfo",
+        "type": "string"
+      }
+    ],
+    "name": "TicketTransfered",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
-        "name": "hashedNetID",
+        "name": "netID",
         "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "givenEventID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "givenSeatInfo",
+        "type": "string"
       }
     ],
     "name": "generateTicket",
@@ -35,16 +94,38 @@
     "inputs": [
       {
         "internalType": "bytes32",
-        "name": "hashedNetID",
+        "name": "netID",
         "type": "bytes32"
       }
     ],
-    "name": "getTicket",
+    "name": "getTicketsByNetID",
     "outputs": [
       {
-        "internalType": "uint256",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "eventId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "seatInfo",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "owner",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct TicketingSystem.Ticket[]",
         "name": "",
-        "type": "uint256"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -69,17 +150,60 @@
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
-      }
-    ],
-    "name": "tickets",
-    "outputs": [
+      },
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
     ],
+    "name": "tickets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eventId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "seatInfo",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "owner",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "netIDSender",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "netIDRecipient",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eventId",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferTicket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

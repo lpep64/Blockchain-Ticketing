@@ -1,32 +1,15 @@
 import Web3 from 'web3';
 import fs from 'fs/promises';
-import readline from 'readline';
+import { execSync } from 'child_process'; // Allows for account crendentials to be received through a sub-process
 
 // Get Neccissary Info From user
 // Ideally this is automated in final prouduct
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
-const key = await new Promise((resolve) => {
-    rl.question('Plese enter your google cloud API key: ', (answer) => {
-        resolve(answer);
-    });
-});
+const key = execSync('gcloud secrets versions access latest --secret="API-key"').toString().trim();
 
-const account = await new Promise((resolve) => {
-    rl.question('Enter your sepolia account address: ', (answer) => {
-        resolve(answer);
-    });
-});
+const account = execSync('gcloud secrets versions access latest --secret="Wallet-address1"').toString().trim();
+const accountKey = execSync('gcloud secrets versions access latest --secret="Wallet-key1"').toString().trim();
 
-const accountKey = await new Promise((resolve) => {
-    rl.question('Enter your sepolia account private key: ', (answer) => {
-        resolve(answer);
-        rl.close();
-    });
-});
 
 // Get the endpoints of the nodes and number of nodes
 const data = await fs.readFile('backend/blockchain/networkInfo.json', 'utf8');
@@ -56,8 +39,7 @@ const ticketContracts = web3Nodes.map(web3 => new web3.eth.Contract(contractABI,
 // Calls a falls a method (given by methodName) on the smart contracts stored in the nodes
 // If one node fails to be connected to for whatever reason it moves on to the next one
 async function callWithFailover(methodName, ...args) {
-    const senderAccount = '0x86d0bD6A5a79164D9396260b5dA5E48f09312d8A';
-    const accountKey = 'b6150607374f41c77d8bf5a1f0fda22a2265ffa089712a208825e677f357d705';
+    const senderAccount = account;
     for (let i = 0; i < ticketContracts.length; i++) {
         try {
             const result = await ticketContracts[i].methods[methodName](...args).call();
@@ -84,4 +66,6 @@ async function callWithFailover(methodName, ...args) {
     throw new Error("All nodes failed to respond.");
 }
 
+// export default callWithFailover;
+// const hashedNetID = Web3.utils.keccak256('smf21001');
 export default callWithFailover;

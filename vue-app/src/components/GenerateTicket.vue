@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
 import callWithFailover from 'backend/blockchain/nodeInterface.js'
-import crypto from 'crypto'
+import Web3 from 'web3'
 
 const netid = ref('')
 const eventid = ref('')
@@ -19,9 +19,9 @@ const submitForm = async () => {
     console.log('SeatID:', seatid.value);
 
     // Hash netID
-    const hashedID = crypto.createHash('sha256').update(netID.value).digest('hex');
+    const hashedNetID = Web3.utils.keccak256(netid.value);
     try {
-        await callWithFailover('generateTicket', hashedID);
+        await callWithFailover('generateTicket', hashedNetID, parseInt(eventid.value, 10), string(seatid.value));
         console.log(`Ticket Successfully generated for netID:${netID.value}`);
     } catch (error) {
         console.log('Failed to generate ticket');

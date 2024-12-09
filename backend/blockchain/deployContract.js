@@ -1,32 +1,13 @@
 import Web3 from 'web3';
 import fs from 'fs/promises';
-import readline from 'readline';
 import solc from 'solc';
+import { execSync } from 'child_process'; // Allows for account crendentials to be received through a sub-process
 
 // Connect the node
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const key = execSync('gcloud secrets versions access latest --secret="API-key"').toString().trim();
 
-const key = await new Promise((resolve) => {
-    rl.question('Plese enter your google cloud API key: ', (answer) => {
-        resolve(answer);
-    });
-});
-
-const account = await new Promise((resolve) => {
-    rl.question('Enter your sepolia account address: ', (answer) => {
-        resolve(answer);
-    });
-});
-
-const accountKey = await new Promise((resolve) => {
-    rl.question('Enter your sepolia account private key: ', (answer) => {
-        resolve(answer);
-        rl.close();
-    });
-});
+const account = execSync('gcloud secrets versions access latest --secret="Wallet-address1"').toString().trim();
+const accountKey = execSync('gcloud secrets versions access latest --secret="Wallet-key1"').toString().trim();
 
 const data = await fs.readFile('backend/blockchain/networkInfo.json', 'utf8');
 const fileData = JSON.parse(data);
@@ -99,4 +80,4 @@ async function deployContract() {
     console.log('Contract deployed at address:', receipt.contractAddress);
 }
 
-export default deployContract;
+deployContract()

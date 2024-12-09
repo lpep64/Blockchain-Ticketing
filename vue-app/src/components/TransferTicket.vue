@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+import callWithFailover from 'backend/blockchain/nodeInterface.js'
+import Web3 from 'web3'
 
 // State variables
 const OldNetID = ref('')
@@ -16,7 +18,14 @@ const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
 
-    //TODO: Code for swapping blockchain
+    const hashedSenderNetID = Web3.utils.keccak256(OldNetID.value);
+    const hashedReceiverNetID = Web3.utils.keccak256(NewNetID.value);
+    try {
+        await callWithFailover('transferTicket', hashedSenderNetID, hashedReceiverNetID, parseInt(eventId, 10)); // TODO need to set up an eventID feild here
+        console.log(`Ticket Successfully transfered`);
+    } catch (error) {
+        console.log('Failed to generate ticket');
+    }
 
 
     notificationMessage.value = "TICKET SWAP SUCCESSFUL";
