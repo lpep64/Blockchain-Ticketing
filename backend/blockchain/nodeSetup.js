@@ -1,18 +1,41 @@
 import axios from 'axios'; // Allows the use of HTTP requests for API usage
-import computePackage from '@google-cloud/compute'; // Allows for interaction with google cloud compute engine
 import { execSync } from 'child_process'; // Allows for account crendentials to be received through a sub-process
+import readline from 'readline';
+import fs from 'fs';
 
-const NODE_COUNT = 3;
-
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 //Node setup
-const { Compute } = computePackage;
 const accessToken = execSync('gcloud auth print-access-token').toString().trim(); // Receive acess toten through a subprocess
 const projectId = 'blockchainticketing';
 const location = 'us-central1';
 
-// Sets up count number of nodes
-function makeNodes(count){
+async function makeNodes(){
+  // Get the count of nodes to be created
+  const count = await new Promise((resolve) => {
+    rl.question('How many nodes would you like to create? \n -for development or low traffic environments 1 is sufficient. \n -for high traffic deployment environments consider more than 1. \n Node-Count:', (answer) => {
+      resolve(parseInt(answer, 10));
+      rl.close();
+    });
+  });
+  // Update the networkInfo file with the node-count
+  fs.readFile('backend/blockchain/networkInfo.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading networkInfo.json file:', err);
+      return;
+    }
+    const fileData = JSON.parse(data);
+    fileData.nodeCount = count;
+    fs.writeFile('backend/blockchain/networkInfo.json', JSON.stringify(fileData, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to networkInfo.json file:', err);
+      }
+    });
+  });
+  // Create the nodes through an API request
   for (let i = 1; i <= count; i++) {
     const nodeName = 'Node-' + i; //nodename formated as 'Node-n' where n is node numebr
     const url = `https://blockchainnodeengine.googleapis.com/v1/projects/${projectId}/locations/${location}/blockchainNodes?blockchain_node_id=${nodeName}`; //google cloud api request
@@ -24,13 +47,14 @@ function makeNodes(count){
         executionClient: "GETH",
         apiEnableAdmin: false,
         apiEnableDebug: false,
-        network: "mainnet",
+        network: "TESTNET_SEPOLIA", //allows for our own custom network
         nodeType: "full"
       },
       labels: {
         environment: "development"
-      }
+      },
     };
+
     axios.post(url, request_data, {
       headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -46,3 +70,4 @@ function makeNodes(count){
   }
 };
 
+export default makeNodes;

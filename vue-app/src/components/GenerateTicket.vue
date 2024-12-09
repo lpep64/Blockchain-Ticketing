@@ -16,42 +16,17 @@ const submitForm = async () => {
     console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
 
+    // Hash netID
+    const hashedNetID = Web3.utils.keccak256(netid.value);
     try {
-        const cloudRunURL = 'https://generateticket-610385862744.us-central1.run.app';
-
-        const response = await fetch(cloudRunURL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                // 'Authorization': `Bearer ${yourToken}` // Uncomment and set your token if needed
-            },
-            body: JSON.stringify({
-                netID: netid.value.trim(),
-                eventID: eventid.value.trim(),
-                seatID: seatid.value ? seatid.value.trim() : null
-            })
-        });
-
-        if (response.ok) {
-            try {
-                const data = await response.json();
-                if (data.ticketID) {
-                    notificationMessage.value = `Ticket generated successfully! Ticket ID: ${data.ticketID}`;
-                } else {
-                    notificationMessage.value = 'Ticket claimed successfully, but no Ticket ID was returned.';
-                }
-            } catch (error) {
-                console.warn('Response is not JSON:', error);
-                notificationMessage.value = 'Ticket claimed successfully. No additional information was returned.';
-            }
-        } else {
-            notificationMessage.value = `Error: ${response.status} ${response.statusText}`;
-        }
+        await callWithFailover('generateTicket', hashedNetID, parseInt(eventid.value, 10), string(seatid.value));
+        console.log(`Ticket Successfully generated for netID:${netID.value}`);
     } catch (error) {
-        console.error('Network or Server Error:', error);
-        notificationMessage.value = 'An error occurred while claiming the ticket. Please try again later.';
+        console.log('Failed to generate ticket');
     }
 
+
+    notificationMessage.value = "IF I HAD A TICKET THIS IS WHERE I WOULD PUT IT";
     showModal.value = true;
 };
 
