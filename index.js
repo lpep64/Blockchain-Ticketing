@@ -3,9 +3,60 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import Web3 from 'web3'
+import callWithFailover from './backend/blockchain/nodeInterface.js'
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+app.use(express.json());
+
+// API Routes for ticket interaction
+app.post("/api/generate-ticket", (req, res) => {
+  console.log('generateAIPCalled');
+  console.log(req.body);
+  const netID = req.body.netID;
+  const eventID = req.body.eventID;
+  const seatInfo = req.body.seatInfo;
+  console.log(netID)
+
+  if (!netID || !eventID || !seatInfo) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    const hashedNetID = Web3.utils.keccak256(netID);
+    callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
+    res.status(200).send("Ticket generated successfully.");
+  } catch (error) {
+    console.error("Error generating ticket:", error);
+    res.status(500).send("Error generating ticket.");
+  }
+});
+
+// API Route for transfering ticket
+app.post("/api/transfer-ticket", (req, res) => {
+  console.log('transferAPICalled')
+  const SendernetID = req.body.SendernetID;
+  const eventID = 100;
+  const ReceiverNetID = req.body.ReceiverNetID;
+
+  if (!SendernetID || !ReceiverNetID) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    const hashedSenderNetID = Web3.utils.keccak256(SendernetID);
+    const hashedReceiverNetID = Web3.utils.keccak256(ReceiverNetID);
+    callWithFailover('transferTicket', hashedSenderNetID, hashedReceiverNetID, eventID);  // Call the backend function
+    res.status(200).send("Ticket transfered successfully.");
+  } catch (error) {
+    console.error("Error generating ticket:", error);
+    res.status(500).send("Error generating ticket.");
+  }
+});
+
+
 
 // CAS
 const UCONN_CAS = "https://login.uconn.edu/cas";

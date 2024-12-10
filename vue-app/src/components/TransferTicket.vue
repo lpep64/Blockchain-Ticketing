@@ -2,10 +2,12 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+import axios from 'axios'
 
 // State variables
 const OldNetID = ref('')
 const NewNetID = ref('')
+const eventid = ref('')
 const notificationMessage = ref('') // For feedback messages
 const showModal = ref(false)        // Controls modal visibility
 
@@ -15,19 +17,16 @@ const router = useRouter()
 const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
-    console.log('EventID:', eventid.value);
-
-    const hashedSenderNetID = Web3.utils.keccak256(OldNetID.value);
-    const hashedReceiverNetID = Web3.utils.keccak256(NewNetID.value);
-    try {
-        await callWithFailover('transferTicket', hashedSenderNetID, hashedReceiverNetID, parseInt(eventId, 10)); // TODO need to set up an eventID feild here
-        console.log(`Ticket Successfully transfered`);
-    } catch (error) {
-        console.log('Failed to generate ticket');
-    }
 
 
-    notificationMessage.value = "TICKET SWAP SUCCESSFUL";
+    const response = await axios.post('/api/transfer-ticket', {
+        SendernetID: OldNetID.value,
+        ReceiverNetID: NewNetID.value,
+        eventID: eventid.value
+    });
+    console.log('transfer response: ', response);
+
+    notificationMessage.value = "Transaction proccessing check back in a few minuets";
 
     // Show modal with feedback
     showModal.value = true

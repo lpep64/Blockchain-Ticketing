@@ -14,3 +14,7 @@ handlers:
     upload: vue-app/dist/index.html
   - url: /
     static_dir: vue-app/dist
+  - url: /api/generate-ticket
+    script: auto
+  - url: /api/transfer-ticket
+    script: auto
