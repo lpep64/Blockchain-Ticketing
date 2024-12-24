@@ -2,36 +2,18 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
-import axios from 'axios'
 
 const netid = ref('')
 const eventid = ref('')
 const seatid = ref('')
-const notificationMessage = ref('') // Handles notification text
-const showModal = ref(false) // Controls modal visibility
 
 const router = useRouter()
 
-const submitForm = async () => {
-    console.log('NetID:', netid.value);
-    console.log('EventID:', eventid.value);
-    console.log('SeatID:', seatid.value);
-
-    const response = await axios.post('/api/generate-ticket', {
-        netID: netid.value,
-        eventID: eventid.value,
-        seatInfo: seatid.value
-    });
-    console.log('Ticket Generation API response: ', response);
-
-
-    notificationMessage.value = "Transaction processing check back in a few minutes";
-    showModal.value = true;
-};
-
-
-const closeModal = () => { 
-    showModal.value = false
+const submitForm = () => {
+    console.log('NetID:', netid.value)
+    console.log('EventID:', eventid.value)
+    console.log('SeatID:', seatid.value)
+    // Add your form submission logic here
 }
 
 const transferTicket = () => {
@@ -50,24 +32,16 @@ const transferTicket = () => {
                     <input type="text" id="netid" v-model="netid" required />
                 </div>
                 <div class="form-group">
-                    <label for="seatid">Seat ID (Optional):</label>
-                    <input type="text" id="seatid" v-model="seatid" />
-                </div>
-                <div class="form-group">
                     <label for="eventid">Event ID:</label>
                     <input type="text" id="eventid" v-model="eventid" required />
+                </div>
+                <div class="form-group">
+                    <label for="seatid">Seat ID (Optional):</label>
+                    <input type="text" id="seatid" v-model="seatid" />
                 </div>
                 <button type="submit">Generate Ticket</button>
             </form>
             <button @click="transferTicket" class="transfer-button">Transfer Existing Ticket</button>
-            
-            <!-- Modal -->
-            <div v-if="showModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" @click="closeModal">&times;</span>
-                    <p>{{ notificationMessage }}</p>
-                </div>
-            </div>
         </main>
     </div>
 </template>
@@ -82,7 +56,6 @@ const transferTicket = () => {
     background-color: #171717;
     color: #0C2340;
     text-align: center;
-    margin-top: 5rem;
 }
 
 h1 {
@@ -144,34 +117,5 @@ button:hover {
 
 .transfer-button:hover {
     background-color: #0A1E30;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    text-align: center;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    cursor: pointer;
-    font-size: 1.2rem;
 }
 </style>

@@ -38,7 +38,7 @@ app.post("/api/generate-ticket", (req, res) => {
 app.post("/api/transfer-ticket", (req, res) => {
   console.log('transferAPICalled')
   const SendernetID = req.body.SendernetID;
-  const eventID = 100;
+  const eventID = req.body.eventID;
   const ReceiverNetID = req.body.ReceiverNetID;
 
   if (!SendernetID || !ReceiverNetID) {
