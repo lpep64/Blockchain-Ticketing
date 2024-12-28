@@ -92,14 +92,12 @@ header {
   color: #FFFFFF;
   padding: 0.25rem;
   width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: static;
   display: flex;
   align-items: center;
   font-family: 'Roboto', sans-serif;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin: 0;
 }
 
 .left-section, .middle-section, .right-section {
