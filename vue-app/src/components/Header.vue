@@ -55,8 +55,8 @@ const applyPromoCode = () => {
 <template>
   <header>
     <div class="left-section">
-      <img src="@/assets/main_logo_husky.svg" alt="Husky Logo" class="logo1" />
-      <img src="@/assets/main_logo.png" alt="UConn Logo" class="logo2" />
+      <img src="@/assets/header/main_logo_husky.svg" alt="Husky Logo" class="logo1" />
+      <img src="@/assets/header/main_logo.png" alt="UConn Logo" class="logo2" />
     </div>
     <div class="middle-section">
       <button @click="transferEvents" class="link-button">Events</button>
