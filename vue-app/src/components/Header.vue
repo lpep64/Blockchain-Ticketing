@@ -98,6 +98,7 @@ header {
   font-family: 'Roboto', sans-serif;
   justify-content: space-between;
   margin: 0;
+  flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 .left-section, .middle-section, .right-section {
@@ -215,21 +216,27 @@ h2 {
 /* Media query for mobile devices */
 @media (max-width: 768px) {
   header {
-    flex-direction: column;
-    height: auto;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    overflow-x: auto; /* Allow horizontal scrolling */
   }
 
   .left-section, .middle-section, .right-section {
-    justify-content: center;
-    margin-bottom: 1rem;
+    justify-content: flex-start;
+    margin-bottom: 0;
   }
 
   .logo1, .logo2 {
-    margin-right: 0;
+    margin-right: 0.5rem;
   }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: 1rem;
+  }
+
+  .link-button, .login-button, .logout-button {
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
   }
 }
 </style>

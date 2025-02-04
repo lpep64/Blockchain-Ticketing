@@ -11,9 +11,11 @@ const router = useRouter()
     <div id="app">
         <Header />
         <main>
-            <img src="@/assets/home/students.jpg" alt="UConn Students" class="MainImg" />
-            <h1>TODO: Button (Claim tickets = login, if login view my tickets), Sports you can get tickets to, sports that are free</h1>
-            <img src="@/assets/home/ads.png" alt="UConn Ads" class="AdsImg" />
+            <img src="@/assets/home/students.jpg" alt="UConn Students" class="Img" />
+            <h1>Add Buttom Here: Send to Events</h1>
+            <img src="@/assets/home/uconnsports.png" alt="UConn Sports" class="Img" />
+            <h1></h1>
+            <img src="@/assets/home/ads.png" alt="UConn Ads" class="Img" />
         </main>
     </div>
 </template>
@@ -36,14 +38,11 @@ h1 {
     font-size: 1.5rem;
 }
 
-.MainImg {
-  height: 32rem;
-  margin: 2rem;
-}
-
-.MainImg {
-  height: 20rem;
-  margin: 2rem;
+.Img {
+  width: 80%;
+  max-width: 100rem;
+  height: auto; 
+  margin: 0.5rem;
 }
 
 </style>
