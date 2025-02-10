@@ -39,7 +39,8 @@ flowchart TB
         - Full Name
         - PeopleSoft ID
         - UConn Email
-        - Student Status"]
+        - Student Status
+        - Ticket List"]
         
         EventData["Event Information (all hashed)
         - Event ID
@@ -47,7 +48,8 @@ flowchart TB
         - Date/Time
         - Venue
         - Total Tickets
-        - Available Tickets"]
+        - Available Tickets
+        - Associated Tickets"]
     end
 
     %% Student flows
