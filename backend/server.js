@@ -5,11 +5,11 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors());
-app.use(express.json());  // Middleware for parsing JSON
+app.use(express.json());
 
 // Routes
-import studentRoutes from './routes/tickets.js'; // Use import for the route
-app.use('/api/students', studentRoutes); // Add student routes
+import ticketRoutes from './routes/tickets.js';
+app.use('/api/tickets', ticketRoutes); // This creates the /api/tickets path
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
