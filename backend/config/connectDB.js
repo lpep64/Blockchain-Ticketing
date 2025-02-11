@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+import mysql from 'mysql2';
 
 // Create connection pool
 const pool = mysql.createPool({
@@ -14,4 +14,4 @@ const pool = mysql.createPool({
 // Promisify for async/await usage
 const db = pool.promise();
 
-module.exports = db;
+export default db;

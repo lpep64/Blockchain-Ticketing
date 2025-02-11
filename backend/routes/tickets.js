@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import db from '../config/connectDB.js'; // MySQL connection
+
 const router = express.Router();
-const db = require('../config/connectDB'); // MySQL connection
 
 // Claim a ticket
-router.post('/claim', async (req, res) => { // TODO: Check this is the right path
+router.post('/claim', async (req, res) => { 
   const { netid, full_name, peoplesoft_id, uconn_email, student_status, event_id } = req.body;
 
   try {
@@ -36,4 +37,4 @@ router.post('/claim', async (req, res) => { // TODO: Check this is the right pat
   }
 });
 
-module.exports = router;
+export default router;
