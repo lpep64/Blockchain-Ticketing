@@ -26,7 +26,7 @@ onMounted(() => {
 });
 
 const transferHome = () => {
-  router.push('/');
+  router.push("/");
 };
 
 const transferEvents = () => {
@@ -134,7 +134,6 @@ header {
   background: none;
   border: 1rem solid transparent;
   color: #FFFFFF;
-  text-decoration: underline;
   cursor: pointer;
   font-size: 1.2rem;
 }

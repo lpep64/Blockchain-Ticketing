@@ -1,18 +1,15 @@
 // src/router.js
 import { createRouter, createWebHistory } from 'vue-router'
-import home from './components/Index.vue'
 
+import home from './components/Index.vue'
 import Events from './components/Events.vue'
 import Wallet from './components/Wallet.vue'
-import GenerateTicket from './components/GenerateTicket.vue'
-import TransferTicket from './components/TransferTicket.vue'
 
 const routes = [
     { path: '/', component: home},
     { path: '/transfer-events', component: Events },
     { path: '/transfer-wallet', component: Wallet },
-    { path: '/generate-ticket', component: GenerateTicket },
-    { path: '/transfer-ticket', component: TransferTicket },
+
     { path: '/:pathMatch(.*)*',
         name: 'not-found',
         component: () => import('./components/NotFound.vue'),
