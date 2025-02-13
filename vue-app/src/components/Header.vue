@@ -25,6 +25,10 @@ onMounted(() => {
   netID.value = getNetIDFromCookie();
 });
 
+const transferHome = () => {
+  router.push('/');
+};
+
 const transferEvents = () => {
   router.push('/transfer-events');
 };
@@ -34,7 +38,7 @@ const transferWallet = () => {
 };
 
 const transferSeatGeek = () => {
-  window.location.href = "https://seatgeek.com";
+  window.location.href = "https://seatgeek.com/search?f=1&search=UConn&ui_origin=home_search";
 };
 
 const popupPromoCode = () => {
@@ -55,8 +59,8 @@ const applyPromoCode = () => {
 <template>
   <header>
     <div class="left-section">
-      <img src="@/assets/header/main_logo_husky.svg" alt="Husky Logo" class="logo1" />
-      <img src="@/assets/header/main_logo.png" alt="UConn Logo" class="logo2" />
+      <img src="@/assets/header/main_logo_husky.svg" alt="Husky Logo" class="logo1" @click="transferHome"/>
+      <img src="@/assets/header/main_logo.png" alt="UConn Logo" class="logo2" @click="transferHome"/>
     </div>
     <div class="middle-section">
       <button @click="transferEvents" class="link-button">Events</button>
@@ -92,7 +96,7 @@ header {
   color: #FFFFFF;
   padding: 0.25rem;
   width: 100%;
-  position: static;
+  position: fixed;
   display: flex;
   align-items: center;
   font-family: 'Roboto', sans-serif;
@@ -120,6 +124,10 @@ header {
 .logo2 {
   height: 25px;
   margin-right: 1rem;
+}
+
+.logo1, .logo2 {
+  cursor: pointer;
 }
 
 .link-button {

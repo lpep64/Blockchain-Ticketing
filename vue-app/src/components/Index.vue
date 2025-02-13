@@ -5,14 +5,21 @@ import Header from './Header.vue'
 
 const router = useRouter()
 
+const transferEvents = () => {
+  router.push('/transfer-events');
+};
+
 </script>
 
 <template>
     <div id="app">
         <Header />
         <main>
+            <h1>Home</h1>
             <img src="@/assets/home/students.jpg" alt="UConn Students" class="Img" />
-            <h1>Add Buttom Here: Send to Events</h1>
+            <div style="width: 80%; height: 1px; margin: 0.5rem 0;"></div>
+            <button @click="transferEvents" class="link-button">CLAIM YOUR TICKETS NOW!</button>
+            <div style="width: 80%; height: 1px; margin: 0.5rem 0;"></div>
             <img src="@/assets/home/uconnsports.png" alt="UConn Sports" class="Img" />
             <h1></h1>
             <img src="@/assets/home/ads.png" alt="UConn Ads" class="Img" />
@@ -43,6 +50,23 @@ h1 {
   max-width: 100rem;
   height: auto; 
   margin: 0.5rem;
+}
+
+button {
+    background-color: #0C2340;
+    color: rgb(212, 212, 212);
+    padding: 1rem 2rem;
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 1rem;
+    cursor: pointer;
+    font-size: 3.5rem;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    border: 1px solid red;
+    background-color: #081a2c;
 }
 
 </style>
