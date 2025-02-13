@@ -25,12 +25,12 @@ onMounted(() => {
   netID.value = getNetIDFromCookie();
 });
 
-const transferEvents = () => {
-  router.push('/transfer-events');
+const transferWallet = () => {
+  router.push('/wallet');
 };
 
-const transferWallet = () => {
-  router.push('/transfer-wallet');
+const transferEvents = () => {
+  router.push('/events');
 };
 
 const transferSeatGeek = () => {
