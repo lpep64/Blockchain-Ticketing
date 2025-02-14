@@ -100,8 +100,7 @@ button {
 }
 
 button:hover {
-    border: 1px solid red;
-    background-color: #081a2c;
+    background-color: red;
 }
 
 </style>

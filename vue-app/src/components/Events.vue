@@ -6,25 +6,27 @@ import Header from './Header.vue'
 const router = useRouter()
 
 const sports = ref(['Basketball', 'Football', 'Hockey', 'Soccer'])
-const selectedSport = ref('all')
+const selectedSports = ref([]) // Allow multiple selections
 const events = ref([
     { id: 1, title: "UConn vs. Villanova", date: "Feb 20, 2025", time: "7:00 PM", location: "Gampel Pavilion", sport: "Basketball", ticketLink: "/buy-tickets/villanova" },
     { id: 2, title: "UConn vs. Duke", date: "Feb 22, 2025", time: "3:00 PM", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/duke" },
     { id: 3, title: "UConn Hockey vs. Boston College", date: "Feb 25, 2025", time: "8:00 PM", location: "Toscano Family Ice Forum", sport: "Hockey", ticketLink: "/buy-tickets/hockey-bc" },
-    // Add more events as needed
 ])
 
 const filteredEvents = computed(() => {
-    if (selectedSport.value === 'all') {
-        return events.value
+    if (selectedSports.value.length === 0) {
+        return events.value // Show all if none are selected
     }
-    return events.value.filter(event => event.sport === selectedSport.value)
+    return events.value.filter(event => selectedSports.value.includes(event.sport))
 })
 
-const addEvent = (event) => {
-    events.value.push(event)
+const toggleSport = (sport) => {
+    if (selectedSports.value.includes(sport)) {
+        selectedSports.value = selectedSports.value.filter(s => s !== sport)
+    } else {
+        selectedSports.value.push(sport)
+    }
 }
-
 </script>
 
 <template>
@@ -35,14 +37,13 @@ const addEvent = (event) => {
             <img src="@/assets/other/events.jpg" alt="UConn Events" class="Img" />
             <div class="container">
                 <div class="left-box">
-                    <h2>Sports</h2>
+                    <h2>Sports</h2> <br>
                     <ul>
-                        <li v-for="sport in sports" :key="sport" @click="selectedSport = sport">
-                            {{ sport }}
-                            <div v-if="selectedSport === sport" class="dropdown">
-                                <input type="text" placeholder="Event Details" v-model="eventDetails" />
-                                <button @click="addEvent({ sport, details: eventDetails })">Add</button>
-                            </div>
+                        <li v-for="sport in sports" :key="sport">
+                            <label>
+                                <input type="checkbox" :value="sport" v-model="selectedSports" />
+                                {{ sport }}
+                            </label>
                         </li>
                     </ul>
                 </div>

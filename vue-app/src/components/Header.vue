@@ -167,7 +167,7 @@ h2 {
 }
 
 .login-button:hover, .logout-button:hover {
-  background-color: #0A1E30;
+  background-color: red;
 }
 
 .promo-popup {
