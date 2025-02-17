@@ -5,30 +5,18 @@ import { execSync } from 'child_process'; // Allows for account crendentials to 
 // Get Neccissary Info From user
 // Ideally this is automated in final prouduct
 
-const key = execSync('gcloud secrets versions access latest --secret="API-key"').toString().trim();
+const networkIP = execSync('gcloud compute instances list --filter="name=eth-network" --format="get(networkInterfaces[0].accessConfigs[0].natIP)"')
+const accountKey = execSync('gcloud secrets versions access latest --secret="eth-priv-key"').toString().trim();
 
-const account = execSync('gcloud secrets versions access latest --secret="Wallet-address1"').toString().trim();
-const accountKey = execSync('gcloud secrets versions access latest --secret="Wallet-key1"').toString().trim();
-
-
-// Get the endpoints of the nodes and number of nodes
-const data = await fs.readFile('backend/blockchain/networkInfo.json', 'utf8');
-const fileData = JSON.parse(data);
-
-const endpoints = Object.values(fileData.nodeEndpoints).map(node => node.jsonRpcApiEndpoint);
-console.log('Endpoints: ', endpoints);
-
-const nodeCount = endpoints.length
-
-// Formulate URLS and connect to them
 let web3Nodes = [];
-for(let i = 0; i< nodeCount; i++){
-    const connection = new Web3(new Web3.providers.HttpProvider(`https://${endpoints[i]}?key=${key}`));
-    web3Nodes.push(connection);
-}
+
+web3Nodes.push(new Web3(`http://${networkIP}:8545`))
+
+const accounts = await web3Nodes[0].eth.getAccounts()
+const account = accounts[0]
 
 // Get the contract info
-const contractAddress = fileData.contractAddress;
+const contractAddress = '0x5b1869d9a4c187f2eaa108f3062412ecf0526b24';
 
 const ABIdata = await fs.readFile('backend/blockchain/contractABI.json', 'utf8');
 const contractABI = JSON.parse(ABIdata);
@@ -66,6 +54,4 @@ async function callWithFailover(methodName, ...args) {
     throw new Error("All nodes failed to respond.");
 }
 
-// export default callWithFailover;
-// const hashedNetID = Web3.utils.keccak256('smf21001');
 export default callWithFailover;

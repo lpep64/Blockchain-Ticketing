@@ -5,7 +5,7 @@ import Web3 from 'web3'
 
 
 // Update netID
-const netID = 'abc12345'
+const netID = 'smf21001'
 
 const hashedSenderNetID = Web3.utils.keccak256(netID);
 

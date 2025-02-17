@@ -4,17 +4,13 @@ import solc from 'solc';
 import { execSync } from 'child_process'; // Allows for account crendentials to be received through a sub-process
 
 // Connect the node
-const key = execSync('gcloud secrets versions access latest --secret="API-key"').toString().trim();
+const networkIP = execSync('gcloud compute instances list --filter="name=eth-network" --format="get(networkInterfaces[0].accessConfigs[0].natIP)"')
+const accountKey = execSync('gcloud secrets versions access latest --secret="eth-priv-key"').toString().trim();
 
-const account = execSync('gcloud secrets versions access latest --secret="Wallet-address1"').toString().trim();
-const accountKey = execSync('gcloud secrets versions access latest --secret="Wallet-key1"').toString().trim();
+const web3 = new Web3(`http://${networkIP}:8545`)
 
-const data = await fs.readFile('backend/blockchain/networkInfo.json', 'utf8');
-const fileData = JSON.parse(data);
-
-const endpoint = fileData.nodeEndpoints["Node-1"].jsonRpcApiEndpoint;
-
-const web3 = new Web3(new Web3.providers.HttpProvider(`https://${endpoint}?key=${key}`));
+const accounts = await web3.eth.getAccounts()
+const account = accounts[0]
 
 web3.eth.net.isListening()
   .then(() => console.log('Connected to Ethereum node'))
@@ -79,5 +75,8 @@ async function deployContract() {
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     console.log('Contract deployed at address:', receipt.contractAddress);
 }
+
+
+
 
 deployContract()
