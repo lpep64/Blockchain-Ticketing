@@ -46,16 +46,17 @@ const transferEvents = () => {
 
 h1 {
     margin-bottom: 1rem;
-    color: #0C2340;
+    color: #000E2F;
     font-size: 1.5rem;
 }
 
 .Img {
   width: 80%;
   max-width: 100rem;
-  height: auto; 
-  margin: 0.5rem;
-  margin-bottom: 20px;
+  height: auto;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Center the button and add spacing */
@@ -67,7 +68,7 @@ h1 {
 
 /* Style the button similar to the navbar */
 .nav-button {
-    background-color: #001E62; /* UConn dark blue */
+    background-color: #000E2F; /* UConn dark blue */
     color: white;
     font-size: 18px;
     font-weight: bold;
@@ -79,7 +80,7 @@ h1 {
 }
 
 .nav-button:hover {
-    background-color: red; /* UConn accent color */
+    background-color: #E4002B; /* UConn accent color */
     transform: scale(1.05);
 }
 
@@ -88,7 +89,7 @@ h1 {
 }
 
 button {
-    background-color: #0C2340;
+    background-color: #000E2F;
     color: rgb(212, 212, 212);
     padding: 1rem 2rem;
     border: 1px solid rgb(212, 212, 212);
@@ -100,7 +101,7 @@ button {
 }
 
 button:hover {
-    background-color: red;
+    background-color: #E4002B;
 }
 
 </style>

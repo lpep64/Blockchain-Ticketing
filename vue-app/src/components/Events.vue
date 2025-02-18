@@ -10,7 +10,7 @@ const selectedSports = ref([]) // Allow multiple selections
 const events = ref([
     { id: 1, title: "UConn vs. Villanova", date: "Feb 20, 2025", time: "7:00 PM", location: "Gampel Pavilion", sport: "Basketball", ticketLink: "/buy-tickets/villanova" },
     { id: 2, title: "UConn vs. Duke", date: "Feb 22, 2025", time: "3:00 PM", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/duke" },
-    { id: 3, title: "UConn Hockey vs. Boston College", date: "Feb 25, 2025", time: "8:00 PM", location: "Toscano Family Ice Forum", sport: "Hockey", ticketLink: "/buy-tickets/hockey-bc" },
+    { id: 3, title: "UConn vs. Boston College", date: "Feb 25, 2025", time: "8:00 PM", location: "Toscano Family Ice Forum", sport: "Hockey", ticketLink: "/buy-tickets/hockey-bc" },
 ])
 
 const filteredEvents = computed(() => {
@@ -78,7 +78,7 @@ const toggleSport = (sport) => {
 
 h1 {
     margin-bottom: 1rem;
-    color: #0C2340;
+    color: #000E2F;
     font-size: 1.5rem;
 }
 
@@ -93,10 +93,11 @@ h1 {
 .left-box, .right-box {
     color: black;
     width: 45%;
-    border: 10px solid #0C2340;
+    border: 10px solid #000E2F;
     border-radius: 1rem;
     background-color: lightgrey;
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 .left-box {
@@ -127,10 +128,12 @@ h1 {
 }
 
 .Img {
-    width: 80%;
-    max-width: 100rem;
-    height: auto; 
-    margin: 0.5rem;
+  width: 80%;
+  max-width: 100rem;
+  height: auto;
+  margin: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .event-card {
@@ -163,7 +166,7 @@ h1 {
 .ticket-button {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #0C2340;
+    background-color: #000E2F;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -171,6 +174,6 @@ h1 {
 }
 
 .ticket-button:hover {
-    background-color: red;
+    background-color: #E4002B;
 }
 </style>

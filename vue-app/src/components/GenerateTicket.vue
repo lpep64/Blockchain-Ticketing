@@ -80,7 +80,7 @@ const transferTicket = () => {
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
-    color: #0C2340;
+    color: #000E2F;
     text-align: center;
     margin: 0;
 }
@@ -95,7 +95,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #0C2340;
+    background-color: #000E2F;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -138,12 +138,12 @@ button:hover {
 }
 
 .transfer-button {
-    background-color: #0C2340;
+    background-color: #000E2F;
     margin-top: 1rem;
 }
 
 .transfer-button:hover {
-    background-color: #0A1E30;
+    background-color: #000E2F;
 }
 
 .modal {

@@ -92,14 +92,14 @@ const applyPromoCode = () => {
 
 <style scoped>
 header {
-  background-color: #0C2340;
+  background-color: #000E2F;
   color: #FFFFFF;
   padding: 0.25rem;
   width: 100%;
   position: fixed;
   display: flex;
   align-items: center;
-  font-family: 'Roboto', sans-serif;
+  font-family: Arial, sans-serif;
   justify-content: space-between;
   margin: 0;
   flex-wrap: nowrap; /* Prevent wrapping */
@@ -139,7 +139,7 @@ header {
 }
 
 .link-button:hover {
-  color: red;
+  color: #E4002B;
 }
 
 .separator {
@@ -167,7 +167,7 @@ h2 {
 }
 
 .login-button:hover, .logout-button:hover {
-  background-color: red;
+  background-color: #E4002B;
 }
 
 .promo-popup {
@@ -191,7 +191,7 @@ h2 {
 
 .popup-content h2 {
   margin-bottom: 1rem;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 1.5rem;
   color: #FFFFFF;
 }
