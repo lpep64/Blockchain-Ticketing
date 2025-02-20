@@ -30,11 +30,11 @@ const transferHome = () => {
 };
 
 const transferEvents = () => {
-  router.push('/transfer-events');
+  router.push('/events');
 };
 
 const transferWallet = () => {
-  router.push('/transfer-wallet');
+  router.push('/wallet');
 };
 
 const transferSeatGeek = () => {

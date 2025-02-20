@@ -7,8 +7,8 @@ import Wallet from './components/Wallet.vue'
 
 const routes = [
     { path: '/', component: home},
-    { path: '/transfer-events', component: Events },
-    { path: '/transfer-wallet', component: Wallet },
+    { path: '/events', component: Events },
+    { path: '/wallet', component: Wallet },
 
     { path: '/:pathMatch(.*)*',
         name: 'not-found',
