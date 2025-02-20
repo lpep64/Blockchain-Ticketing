@@ -10,8 +10,10 @@ const tickets = ref([ // This is the list of tickets (like events)
     { id: 2, title: "UConn Football vs. Duke", sport: "Football" },
     { id: 3, title: "UConn Hockey vs. Boston College", sport: "Hockey" },
     { id: 4, title: "UConn Basketball vs. Syracuse", sport: "Basketball" },
-    { id: 5, title: "UConn Footbll vs. Alabama", sport: "Football" },
+    { id: 5, title: "UConn Football vs. Alabama", sport: "Football" },
     { id: 6, title: "UConn Hockey vs. Providence", sport: "Hockey" },
+    { id: 7, title: "UConn Soccer vs. Boston College", sport: "Soccer" },
+    { id: 8, title: "UConn Celebration", sport: "Other" }
 ])
 
 </script>
@@ -20,7 +22,6 @@ const tickets = ref([ // This is the list of tickets (like events)
   <div id="app">
     <Header />
     <main>
-      <h1>Wallet</h1>
       <img src="@/assets/other/wallet.jpg" alt="UConn Wallet" class="Img" />
       <div class="ticket-container">
         <h2 class="ticket-header">Your Tickets</h2>
@@ -57,9 +58,9 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 40rem;
-  width: 90%;
-  height: 50vh;
+  width: 80%; /* Same width as the image */
+  max-width: 100rem; /* Same max-width as the image */
+  height: 100vh; /* Double the height */
   color: #FFFFFF;
   border: 2px solid #000E2F;
   border-radius: 1rem;
@@ -90,7 +91,7 @@ main {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  max-height: 200px; /* Keeps the list scrollable */
+  max-height: calc(100vh - 4rem); /* Adjusted for the header and padding */
   overflow-y: auto;
 }
 

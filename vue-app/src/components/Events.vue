@@ -5,19 +5,36 @@ import Header from './Header.vue'
 
 const router = useRouter()
 
-const sports = ref(['Basketball', 'Football', 'Hockey', 'Soccer'])
+const sports = ref([
+    'Basketball', 'Football',
+    'Hockey', 'Soccer', 'Other'
+])
+
+const allsports = ref([
+    'Men\'s Basketball', 'Women\'s Basketball', 'Men\'s Football', 'Women\'s Football',
+    'Men\'s Hockey', 'Women\'s Hockey', 'Men\'s Soccer', 'Women\'s Soccer', 'Other'
+])
+
 const selectedSports = ref([]) // Allow multiple selections
 const events = ref([
-    { id: 1, title: "UConn vs. Villanova", date: "Feb 20, 2025", time: "7:00 PM", location: "Gampel Pavilion", sport: "Basketball", ticketLink: "/buy-tickets/villanova" },
-    { id: 2, title: "UConn vs. Duke", date: "Feb 22, 2025", time: "3:00 PM", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/duke" },
-    { id: 3, title: "UConn vs. Boston College", date: "Feb 25, 2025", time: "8:00 PM", location: "Toscano Family Ice Forum", sport: "Hockey", ticketLink: "/buy-tickets/hockey-bc" },
+    { id: 1, title: "UConn vs. Villanova", date: "2025-02-20T19:00", location: "Gampel Pavilion", sport: "Men's Basketball", ticketLink: "/buy-tickets/villanova", ticketsOpen: "2025-02-01T10:00" },
+    { id: 2, title: "UConn vs. Duke", date: "2025-02-22T15:00", location: "Pratt & Whitney Stadium", sport: "Men's Football", ticketLink: "/buy-tickets/duke", ticketsOpen: "2025-02-02T10:00" },
+    { id: 3, title: "UConn vs. Boston College", date: "2025-02-25T20:00", location: "Toscano Family Ice Forum", sport: "Women's Hockey", ticketLink: "/buy-tickets/hockey-bc", ticketsOpen: "2025-02-03T10:00" },
+    { id: 4, title: "UConn vs. Syracuse", date: "2025-02-27T19:00", location: "Gampel Pavilion", sport: "Women's Basketball", ticketLink: "/buy-tickets/syracuse", ticketsOpen: "2025-02-04T10:00" },
+    { id: 5, title: "UConn vs. Alabama", date: "2025-03-01T15:00", location: "Pratt & Whitney Stadium", sport: "Men's Football", ticketLink: "/buy-tickets/alabama", ticketsOpen: "2025-02-05T10:00" },
+    { id: 6, title: "UConn vs. Providence", date: "2025-03-04T20:00", location: "Toscano Family Ice Forum", sport: "Men's Hockey", ticketLink: "/buy-tickets/hockey-providence", ticketsOpen: "2025-02-06T10:00" },
+    { id: 7, title: "UConn vs. Boston College", date: "2025-03-06T19:00", location: "Morrone Stadium", sport: "Men's Soccer", ticketLink: "/buy-tickets/soccer-bc", ticketsOpen: "2025-02-07T10:00" },
+    { id: 8, title: "UConn Celebration", date: "2025-03-08T18:00", location: "Gampel Pavilion", sport: "Other", ticketLink: "/buy-tickets/celebration", ticketsOpen: "2025-02-08T10:00" }
 ])
 
 const filteredEvents = computed(() => {
+    const sortedEvents = [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen))
     if (selectedSports.value.length === 0) {
-        return events.value // Show all if none are selected
+        return sortedEvents // Show all if none are selected
     }
-    return events.value.filter(event => selectedSports.value.includes(event.sport))
+    return sortedEvents.filter(event => {
+        return selectedSports.value.some(sport => event.sport.includes(sport))
+    })
 })
 
 const toggleSport = (sport) => {
@@ -27,18 +44,43 @@ const toggleSport = (sport) => {
         selectedSports.value.push(sport)
     }
 }
+
+const showAddEventPopup = ref(false)
+const newEvent = ref({
+    sport: '',
+    team: '',
+    date: '',
+    time: '',
+    location: '',
+    ticketsOpen: ''
+})
+
+const openAddEventPopup = () => {
+    showAddEventPopup.value = true
+}
+
+const closeAddEventPopup = () => {
+    showAddEventPopup.value = false
+}
+
+const addEvent = () => {
+    const { sport, team, date, time, location, ticketsOpen } = newEvent.value
+    const title = `UConn vs. ${team}`
+    const id = events.value.length + 1
+    events.value.push({ id, title, date, time, location, sport, ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`, ticketsOpen })
+    closeAddEventPopup()
+}
 </script>
 
 <template>
     <div id="app">
         <Header />
         <main>
-            <h1>Events</h1>
             <img src="@/assets/other/events.jpg" alt="UConn Events" class="Img" />
             <div class="container">
-                <div class="left-box">
-                    <h2>Sports</h2> <br>
-                    <ul>
+                <div>
+                    <h2>Sports</h2>
+                    <ul class="sports-list">
                         <li v-for="sport in sports" :key="sport">
                             <label>
                                 <input type="checkbox" :value="sport" v-model="selectedSports" />
@@ -47,20 +89,49 @@ const toggleSport = (sport) => {
                         </li>
                     </ul>
                 </div>
-                <div class="right-box">
+                <div>
                     <h2>Upcoming Events</h2>
                     <ul class="events-list">
                         <li v-for="event in filteredEvents" :key="event.id" class="event-card">
                             <div class="event-details">
-                                <h2>{{ event.title }}</h2>
-                                <p>{{ event.date }} | {{ event.time }} | {{ event.location }}</p>
+                                <h2>{{ event.sport }}: {{ event.title }}</h2>
+                                <p>{{ event.date }} | {{ event.location }}</p>
                                 <a :href="event.ticketLink" class="ticket-button">Buy Tickets</a>
+                                <p class="tickets-open">Tickets Open: {{ event.ticketsOpen }}</p>
                             </div>
                         </li>
                     </ul>
                 </div>
+                <button @click="openAddEventPopup" class="add-event-button">Add Event</button>
             </div>
         </main>
+        <div v-if="showAddEventPopup" class="add-event-popup">
+            <div class="popup-content">
+                <h2>Add Event</h2>
+                <label>Sport</label>
+                <select v-model="newEvent.sport">
+                    <option v-for="sport in allsports" :key="sport" :value="sport">{{ sport }}</option>
+                </select>
+                <label>Team</label>
+                <input v-model="newEvent.team" type="text" placeholder="Team UConn is playing" />
+                <label>Date</label>
+                <input v-model="newEvent.date" type="datetime-local" />
+                <label>Location</label>
+                <select v-model="newEvent.location">
+                    <option v-if="newEvent.sport.includes('Basketball')" value="Gampel Pavilion">Gampel Pavilion</option>
+                    <option v-if="newEvent.sport.includes('Basketball')" value="XL Center">XL Center</option>
+                    <option v-if="newEvent.sport.includes('Hockey')" value="Toscano Family Ice Forum">Toscano Family Ice Forum</option>
+                    <option v-if="newEvent.sport.includes('Hockey')" value="XL Center">XL Center</option>
+                    <option v-if="newEvent.sport.includes('Soccer')" value="Morrone Stadium">Morrone Stadium</option>
+                    <option v-if="newEvent.sport.includes('Football')" value="Pratt & Whitney Stadium">Pratt & Whitney Stadium</option>
+                    <option v-if="newEvent.sport === 'Other'" value="Gampel Pavilion">Gampel Pavilion</option>
+                </select>
+                <label>Tickets Open</label>
+                <input v-model="newEvent.ticketsOpen" type="datetime-local" />
+                <button @click="addEvent">Add</button>
+                <button @click="closeAddEventPopup">Close</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -76,64 +147,72 @@ const toggleSport = (sport) => {
     margin: 0;
 }
 
-h1 {
-    margin-bottom: 1rem;
-    color: #000E2F;
-    font-size: 1.5rem;
-}
-
 .container {
     display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 150rem;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 100rem; 
     margin: 0 auto;
 }
 
-.left-box, .right-box {
-    color: black;
-    width: 45%;
+.container > div {
+    width: 100%;
     border: 10px solid #000E2F;
     border-radius: 1rem;
-    background-color: lightgrey;
+    background-color: #000E2F;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    color: white;
 }
 
-.left-box {
-    margin-right: 1rem;
+h2 {
+    font-size: 2rem; /* Increase font size for h2 headers */
+    margin-bottom: 0.5rem; /* Reduce space below h2 headers */
 }
 
-.right-box {
-    margin-left: 1rem;
-}
-
-.left-box ul, .right-box ul {
+ul {
     list-style: none;
     padding: 0;
 }
 
-.left-box li {
-    cursor: pointer;
-    margin-bottom: 1rem;
+.sports-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 1.25rem; /* Increase font size */
 }
 
-.dropdown {
-    margin-top: 0.5rem;
+.sports-list li {
+    cursor: pointer;
+    margin: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+label {
+    display: flex;
+    align-items: center;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
 }
 
 .events-list {
-    max-height: 200px;
+    height: 40rem; /* Reduce the height of the upcoming events container */
     overflow-y: auto;
 }
 
 .Img {
-  width: 80%;
-  max-width: 100rem;
-  height: auto;
-  margin: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 100rem;
+    height: auto;
+    margin: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .event-card {
@@ -142,10 +221,9 @@ h1 {
     overflow: hidden;
     transition: transform 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.event-card:hover {
-    transform: translateY(-5px);
+    background-color: white; /* Change background color to white */
+    color: #000E2F; /* Change text color to #000E2F */
+    margin: 1rem 0; /* Add margin above and below */
 }
 
 .event-details {
@@ -160,7 +238,12 @@ h1 {
 
 .event-details p {
     margin-top: 5px;
-    color: #555;
+    color: #000E2F; /* Change text color to #000E2F */
+}
+
+.tickets-open {
+    color: darkgrey; /* Set tickets open time and date color to dark grey */
+    margin-top: 10px;
 }
 
 .ticket-button {
@@ -175,5 +258,74 @@ h1 {
 
 .ticket-button:hover {
     background-color: #E4002B;
+}
+
+.add-event-button {
+    background-color: #000E2F;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.add-event-button:hover {
+    background-color: #E4002B;
+}
+
+.add-event-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #7C878E;
+    padding: 3rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    border-radius: 15px;
+    width: 400px;
+}
+
+.popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup-content h2 {
+    margin-bottom: 1rem;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    color: #FFFFFF;
+}
+
+.popup-content label {
+    margin-top: 1rem;
+    color: #FFFFFF;
+}
+
+.popup-content input, .popup-content select {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 2px solid #FFFFFF;
+    border-radius: 5px;
+    width: 80%;
+}
+
+.popup-content button {
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #1B2E67;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+}
+
+.popup-content button:hover {
+    background-color: #0A1E30;
 }
 </style>
