@@ -6,7 +6,7 @@ import Header from './Header.vue'
 const router = useRouter()
 
 const transferEvents = () => {
-  router.push('/transfer-events');
+  router.push('/events');
 };
 
 </script>
