@@ -255,7 +255,7 @@ input[type="checkbox"] {
 }
 
 .tickets-open {
-    color: darkgrey; /* Set tickets open time and date color to dark grey */
+    color: #7C878E; /* Set tickets open time and date color to dark grey */
     margin-top: 10px;
 }
 

@@ -144,7 +144,7 @@ header {
 }
 
 .separator {
-  color: grey;
+  color: #7C878E;
   font-size: 2rem;
 }
 
@@ -223,7 +223,7 @@ h2 {
 }
 
 .popup-content button:hover {
-  background-color: #0A1E30;
+  background-color: #E4002B;
 }
 
 /* Media query for mobile devices */
