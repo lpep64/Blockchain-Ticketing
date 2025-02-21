@@ -3,25 +3,38 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
 
+const formatDate = (datetime) => {
+    const date = new Date(datetime);
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true, // Use 12-hour clock (AM/PM)
+    };
+    return date.toLocaleString('en-US', options);
+}
+
+
+
 const router = useRouter()
 
 const sports = ref([
-    'Basketball', 'Football',
-    'Hockey', 'Soccer', 'Other'
+    'Basketball', 'Football', 'Hockey', 'Soccer', 'Other'
 ])
 
 const allsports = ref([
-    'Men\'s Basketball', 'Women\'s Basketball', 'Men\'s Football', 'Women\'s Football',
-    'Men\'s Hockey', 'Women\'s Hockey', 'Men\'s Soccer', 'Women\'s Soccer', 'Other'
+    'Men\'s Basketball', 'Women\'s Basketball', 'Football', 'Men\'s Hockey', 'Women\'s Hockey', 'Men\'s Soccer', 'Women\'s Soccer', 'Other'
 ])
 
 const selectedSports = ref([]) // Allow multiple selections
 const events = ref([
     { id: 1, title: "UConn vs. Villanova", date: "2025-02-20T19:00", location: "Gampel Pavilion", sport: "Men's Basketball", ticketLink: "/buy-tickets/villanova", ticketsOpen: "2025-02-01T10:00" },
-    { id: 2, title: "UConn vs. Duke", date: "2025-02-22T15:00", location: "Pratt & Whitney Stadium", sport: "Men's Football", ticketLink: "/buy-tickets/duke", ticketsOpen: "2025-02-02T10:00" },
+    { id: 2, title: "UConn vs. Duke", date: "2025-02-22T15:00", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/duke", ticketsOpen: "2025-02-02T10:00" },
     { id: 3, title: "UConn vs. Boston College", date: "2025-02-25T20:00", location: "Toscano Family Ice Forum", sport: "Women's Hockey", ticketLink: "/buy-tickets/hockey-bc", ticketsOpen: "2025-02-03T10:00" },
     { id: 4, title: "UConn vs. Syracuse", date: "2025-02-27T19:00", location: "Gampel Pavilion", sport: "Women's Basketball", ticketLink: "/buy-tickets/syracuse", ticketsOpen: "2025-02-04T10:00" },
-    { id: 5, title: "UConn vs. Alabama", date: "2025-03-01T15:00", location: "Pratt & Whitney Stadium", sport: "Men's Football", ticketLink: "/buy-tickets/alabama", ticketsOpen: "2025-02-05T10:00" },
+    { id: 5, title: "UConn vs. Alabama", date: "2025-03-01T15:00", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/alabama", ticketsOpen: "2025-02-05T10:00" },
     { id: 6, title: "UConn vs. Providence", date: "2025-03-04T20:00", location: "Toscano Family Ice Forum", sport: "Men's Hockey", ticketLink: "/buy-tickets/hockey-providence", ticketsOpen: "2025-02-06T10:00" },
     { id: 7, title: "UConn vs. Boston College", date: "2025-03-06T19:00", location: "Morrone Stadium", sport: "Men's Soccer", ticketLink: "/buy-tickets/soccer-bc", ticketsOpen: "2025-02-07T10:00" },
     { id: 8, title: "UConn Celebration", date: "2025-03-08T18:00", location: "Gampel Pavilion", sport: "Other", ticketLink: "/buy-tickets/celebration", ticketsOpen: "2025-02-08T10:00" }
@@ -95,9 +108,9 @@ const addEvent = () => {
                         <li v-for="event in filteredEvents" :key="event.id" class="event-card">
                             <div class="event-details">
                                 <h2>{{ event.sport }}: {{ event.title }}</h2>
-                                <p>{{ event.date }} | {{ event.location }}</p>
+                                <p>{{ formatDate(event.date) }} | {{ event.location }}</p>
                                 <a :href="event.ticketLink" class="ticket-button">Buy Tickets</a>
-                                <p class="tickets-open">Tickets Open: {{ event.ticketsOpen }}</p>
+                                <p class="tickets-open">Tickets Open: {{ formatDate(event.ticketsOpen) }}</p>
                             </div>
                         </li>
                     </ul>

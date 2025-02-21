@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const netID = ref(null);
 const router = useRouter();
+const route = useRoute();
 const showPromoPopup = ref(false);
 const promoCode = ref("");
 
@@ -63,9 +64,9 @@ const applyPromoCode = () => {
       <img src="@/assets/header/main_logo.png" alt="UConn Logo" class="logo2" @click="transferHome"/>
     </div>
     <div class="middle-section">
-      <button @click="transferEvents" class="link-button">Events</button>
+     <button @click="transferEvents" :class="{'link-button': true, 'active': route.path === '/events'}">Events</button>
       <span class="separator">|</span>
-      <button @click="transferWallet" class="link-button">Wallet</button>
+      <button @click="transferWallet" :class="{'link-button': true, 'active': route.path === '/wallet'}">Wallet</button>
       <span class="separator">|</span>
       <button @click="transferSeatGeek" class="link-button">SeatGeek</button>
       <span class="separator">|</span>
@@ -145,6 +146,11 @@ header {
 .separator {
   color: grey;
   font-size: 2rem;
+}
+
+.active {
+  text-decoration: underline;
+  color: white;
 }
 
 h2 {
