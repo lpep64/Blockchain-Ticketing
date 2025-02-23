@@ -54,6 +54,7 @@ fs.writeFile('backend/blockchain/contractBytecode.txt', bytecode, (err) => {
 
 // Deploy the contract
 const contract = new web3.eth.Contract(abi);
+let address = ""
 
 async function deployContract() {
     const deployTx = contract.deploy({
@@ -74,9 +75,14 @@ async function deployContract() {
     const signedTx = await web3.eth.accounts.signTransaction(tx, accountKey);
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     console.log('Contract deployed at address:', receipt.contractAddress);
+    address = receipt.contractAddress
 }
 
+await deployContract()
 
-
-
-deployContract()
+// Store the address
+await fs.writeFile('backend/blockchain/contractAddress.txt', address, (err) => {
+  if (err) {
+    console.error('Error writing to contractAddress.txt file:', err);
+  }
+})

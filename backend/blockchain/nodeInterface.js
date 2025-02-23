@@ -16,7 +16,7 @@ const accounts = await web3Nodes[0].eth.getAccounts()
 const account = accounts[0]
 
 // Get the contract info
-const contractAddress = '0x5b1869d9a4c187f2eaa108f3062412ecf0526b24';
+const contractAddress = fs.readFile('backend/blockchain/contractAddress.txt', 'utf8');
 
 const ABIdata = await fs.readFile('backend/blockchain/contractABI.json', 'utf8');
 const contractABI = JSON.parse(ABIdata);
