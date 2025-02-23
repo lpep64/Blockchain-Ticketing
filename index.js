@@ -3,6 +3,7 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "./backend/database/databaseConnector.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -39,11 +40,19 @@ app.get("/login/callback", async (req, res) => {
     const response = await axios.get(validateUrl, { responseType: "text" });
 
     const userMatch = response.data.match(/<cas:user>(.*?)<\/cas:user>/);
-    if (userMatch) {
-      const netID = userMatch[1];
+    const netID = userMatch[1];
+    console.log(userMatch);
+    
+    const [items] = await db.execute("SELECT netID FROM users WHERE netID = ?", [netID]);
+
+    if (items.length > 0) {
+      console.log("ALREADY INSERTED");
       res.cookie("netID", netID);
       res.redirect("/");
     } else {
+      await db.execute("INSERT INTO users (netID) VALUES (?)", [netID]);
+      console.log("NEW INSERTED");
+      res.cookie("netID", netID);
       res.redirect("/");
     }
   } catch (error) {

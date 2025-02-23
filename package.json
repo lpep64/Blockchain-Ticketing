@@ -7,7 +7,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "start": "node index.js"
+    "startindex": "node index.js",
+    "startdatabase": "node backend/backendServer.js",
+    "start": "concurrently \"npm run startindex\" \"npm run startdatabase\""
   },
   "type": "module",
   "keywords": [],
@@ -16,8 +18,10 @@
   "dependencies": {
     "@google-cloud/compute": "^4.7.0",
     "axios": "^1.7.8",
+    "concurrently": "^9.1.2",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.1",
+    "mysql2": "^3.12.0",
     "web3": "^4.14.0"
   }
 }
