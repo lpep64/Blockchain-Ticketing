@@ -90,9 +90,9 @@ h1 {
 
 button {
     background-color: #000E2F;
-    color: #7C878E;
+    color: white;
     padding: 1rem 2rem;
-    border: 1px solid #7C878E;
+    border: 1px solid white;
     border-radius: 1rem;
     cursor: pointer;
     font-size: 3.5rem;
