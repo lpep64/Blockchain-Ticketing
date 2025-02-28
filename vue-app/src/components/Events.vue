@@ -70,11 +70,24 @@ const newEvent = ref({
     ticketsOpen: ''
 })
 
+const resetForm = () => {
+    newEvent.value = {
+        sport: '',
+        team: '',
+        date: '',
+        time: '',
+        location: '',
+        ticketsOpen: ''
+    }
+}
+
 const openAddEventPopup = () => {
+    resetForm() // Reset form when opening popup
     showAddEventPopup.value = true
 }
 
 const closeAddEventPopup = () => {
+    resetForm() // Reset form when closing popup
     showAddEventPopup.value = false
 }
 
@@ -103,6 +116,49 @@ const validateEvent = () => {
         errorMessage.value = "Please select when tickets open"
         return false
     }
+
+    // Date validation
+    const eventDate = new Date(newEvent.value.date)
+    const currentDate = new Date()
+    
+    if (isNaN(eventDate.getTime())) {
+        errorMessage.value = "Please enter a valid date and time"
+        return false
+    }
+    
+    if (eventDate < currentDate) {
+        errorMessage.value = "Event date cannot be in the past"
+        return false
+    }
+    
+    if (!newEvent.value.location) {
+        errorMessage.value = "Please select a location"
+        return false
+    }
+    
+    if (!newEvent.value.ticketsOpen) {
+        errorMessage.value = "Please select when tickets open"
+        return false
+    }
+    
+    // Tickets open date validation
+    const ticketsOpenDate = new Date(newEvent.value.ticketsOpen)
+    
+    if (isNaN(ticketsOpenDate.getTime())) {
+        errorMessage.value = "Please enter a valid tickets open date and time"
+        return false
+    }
+    
+    if (ticketsOpenDate < currentDate) {
+        errorMessage.value = "Tickets open date cannot be in the past"
+        return false
+    }
+    
+    if (ticketsOpenDate > eventDate) {
+        errorMessage.value = "Tickets cannot open after the event date"
+        return false
+    }
+
     return true
 }
 
@@ -126,24 +182,12 @@ const addEvent = () => {
     })
     
     // Reset form
-    newEvent.value = {
-        sport: '',
-        team: '',
-        date: '',
-        time: '',
-        location: '',
-        ticketsOpen: ''
-    }
+    resetForm()
     
     closeAddEventPopup()
 }
 
-// Click outside to close error popup
-const handleClickOutside = (e) => {
-    if (e.target.className === 'error-popup-overlay') {
-        closeErrorPopup()
-    }
-}
+
 </script>
 
 <template>
@@ -181,31 +225,35 @@ const handleClickOutside = (e) => {
         </main>
         
         <!-- Add Event Popup -->
-        <div v-if="showAddEventPopup" class="add-event-popup">
-            <div class="popup-content">
-                <h2>Add Event</h2>
-                <label>Sport</label>
-                <select v-model="newEvent.sport">
-                    <option v-for="sport in allsports" :key="sport" :value="sport">{{ sport }}</option>
-                </select>
-                <label>Team</label>
-                <input v-model="newEvent.team" type="text" placeholder="Team UConn is playing" />
-                <label>Date</label>
-                <input v-model="newEvent.date" type="datetime-local" />
-                <label>Location</label>
-                <select v-model="newEvent.location">
-                    <option v-if="newEvent.sport.includes('Basketball')" value="Gampel Pavilion">Gampel Pavilion</option>
-                    <option v-if="newEvent.sport.includes('Basketball')" value="XL Center">XL Center</option>
-                    <option v-if="newEvent.sport.includes('Hockey')" value="Toscano Family Ice Forum">Toscano Family Ice Forum</option>
-                    <option v-if="newEvent.sport.includes('Hockey')" value="XL Center">XL Center</option>
-                    <option v-if="newEvent.sport.includes('Soccer')" value="Morrone Stadium">Morrone Stadium</option>
-                    <option v-if="newEvent.sport.includes('Football')" value="Pratt & Whitney Stadium">Pratt & Whitney Stadium</option>
-                    <option v-if="newEvent.sport === 'Other'" value="Gampel Pavilion">Gampel Pavilion</option>
-                </select>
-                <label>Tickets Open</label>
-                <input v-model="newEvent.ticketsOpen" type="datetime-local" />
-                <button @click="addEvent">Add</button>
-                <button @click="closeAddEventPopup">Close</button>
+        <div v-if="showAddEventPopup" class="add-event-popup-overlay">
+            <div class="add-event-popup">
+                <div class="popup-content">
+                    <h2>Add Event</h2>
+                    <label>Sport</label>
+                    <select v-model="newEvent.sport">
+                        <option v-for="sport in allsports" :key="sport" :value="sport">{{ sport }}</option>
+                    </select>
+                    <label>Team</label>
+                    <input v-model="newEvent.team" type="text" placeholder="Team UConn is playing" />
+                    <label>Date</label>
+                    <input v-model="newEvent.date" type="datetime-local" />
+                    <label>Location</label>
+                    <select v-model="newEvent.location">
+                        <option v-if="newEvent.sport.includes('Basketball')" value="Gampel Pavilion">Gampel Pavilion</option>
+                        <option v-if="newEvent.sport.includes('Basketball')" value="XL Center">XL Center</option>
+                        <option v-if="newEvent.sport.includes('Hockey')" value="Toscano Family Ice Forum">Toscano Family Ice Forum</option>
+                        <option v-if="newEvent.sport.includes('Hockey')" value="XL Center">XL Center</option>
+                        <option v-if="newEvent.sport.includes('Soccer')" value="Morrone Stadium">Morrone Stadium</option>
+                        <option v-if="newEvent.sport.includes('Football')" value="Pratt & Whitney Stadium">Pratt & Whitney Stadium</option>
+                        <option v-if="newEvent.sport === 'Other'" value="Gampel Pavilion">Gampel Pavilion</option>
+                    </select>
+                    <label>Tickets Open</label>
+                    <input v-model="newEvent.ticketsOpen" type="datetime-local" />
+                    <div class="button-group">
+                        <button @click="addEvent">Add</button>
+                        <button @click="closeAddEventPopup">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -354,23 +402,41 @@ input[type="checkbox"] {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 1rem;
+    margin-bottom: .5rem;
+    /* New styles to match ticket button */
+    display: inline-block;
+    font-size: 1rem;
+    min-width: 120px;
+    text-align: center;
 }
 
 .add-event-button:hover {
     background-color: #E4002B;
 }
 
-.add-event-popup {
+/* Add Event Popup Overlay */
+.add-event-popup-overlay {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #7C878E;
-    padding: 3rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
+}
+
+.add-event-popup {
+    background-color: #7C878E;
+    padding: 2.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 15px;
     width: 400px;
+    max-height: 90vh; /* Limit height to 90% of viewport height */
+    overflow-y: auto; /* Add scrolling if needed */
+    margin: 2rem; /* Add margin around the popup */
 }
 
 .popup-content {
@@ -397,12 +463,18 @@ input[type="checkbox"] {
     font-size: 1rem;
     border: 2px solid #FFFFFF;
     border-radius: 5px;
-    width: 80%;
+    width: 90%;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
 }
 
 .popup-content button {
     margin: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
     font-size: 1rem;
     cursor: pointer;
     background-color: #1B2E67;
@@ -460,7 +532,7 @@ input[type="checkbox"] {
 }
 
 .error-popup button {
-    background-color: #000E2F;
+    background-color: #1B2E67;
     color: white;
     padding: 0.5rem 2rem;
     border: none;
