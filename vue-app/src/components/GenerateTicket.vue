@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+<<<<<<< HEAD
+=======
+import axios from 'axios'
+>>>>>>> frontend-2.0
 
 const netid = ref('')
 const eventid = ref('')
@@ -16,6 +20,7 @@ const submitForm = async () => {
     console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
 
+<<<<<<< HEAD
     try {
         const cloudRunURL = 'https://generateticket-610385862744.us-central1.run.app';
 
@@ -52,6 +57,17 @@ const submitForm = async () => {
         notificationMessage.value = 'An error occurred while claiming the ticket. Please try again later.';
     }
 
+=======
+    const response = await axios.post('/api/generate-ticket', {
+        netID: netid.value,
+        eventID: eventid.value,
+        seatInfo: seatid.value
+    });
+    console.log('Ticket Generation API response: ', response);
+
+
+    notificationMessage.value = "Transaction processing check back in a few minutes";
+>>>>>>> frontend-2.0
     showModal.value = true;
 };
 
@@ -76,6 +92,7 @@ const transferTicket = () => {
                     <input type="text" id="netid" v-model="netid" required />
                 </div>
                 <div class="form-group">
+<<<<<<< HEAD
                     <label for="eventid">Event ID:</label>
                     <input type="text" id="eventid" v-model="eventid" required />
                 </div>
@@ -83,6 +100,15 @@ const transferTicket = () => {
                     <label for="seatid">Seat ID (Optional):</label>
                     <input type="text" id="seatid" v-model="seatid" />
                 </div>
+=======
+                    <label for="seatid">Seat ID (Optional):</label>
+                    <input type="text" id="seatid" v-model="seatid" />
+                </div>
+                <div class="form-group">
+                    <label for="eventid">Event ID:</label>
+                    <input type="text" id="eventid" v-model="eventid" required />
+                </div>
+>>>>>>> frontend-2.0
                 <button type="submit">Generate Ticket</button>
             </form>
             <button @click="transferTicket" class="transfer-button">Transfer Existing Ticket</button>
@@ -106,9 +132,15 @@ const transferTicket = () => {
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
+<<<<<<< HEAD
     color: #0C2340;
     text-align: center;
     margin-top: 5rem;
+=======
+    color: #000E2F;
+    text-align: center;
+    margin: 0;
+>>>>>>> frontend-2.0
 }
 
 h1 {
@@ -121,7 +153,11 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+<<<<<<< HEAD
     background-color: #0C2340;
+=======
+    background-color: #000E2F;
+>>>>>>> frontend-2.0
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -164,12 +200,20 @@ button:hover {
 }
 
 .transfer-button {
+<<<<<<< HEAD
     background-color: #0C2340;
+=======
+    background-color: #000E2F;
+>>>>>>> frontend-2.0
     margin-top: 1rem;
 }
 
 .transfer-button:hover {
+<<<<<<< HEAD
     background-color: #0A1E30;
+=======
+    background-color: #000E2F;
+>>>>>>> frontend-2.0
 }
 
 .modal {

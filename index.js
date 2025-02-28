@@ -3,11 +3,68 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+<<<<<<< HEAD
 import db from "./backend/database/databaseConnector.js";
+=======
+import Web3 from 'web3'
+import callWithFailover from './backend/blockchain/nodeInterface.js'
+>>>>>>> frontend-2.0
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+<<<<<<< HEAD
+=======
+app.use(express.json());
+
+// API Routes for ticket interaction
+app.post("/api/generate-ticket", (req, res) => {
+  console.log('generateAIPCalled');
+  console.log(req.body);
+  const netID = req.body.netID;
+  const eventID = req.body.eventID;
+  const seatInfo = req.body.seatInfo;
+  console.log(netID)
+
+  if (!netID || !eventID || !seatInfo) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    const hashedNetID = Web3.utils.keccak256(netID);
+    callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
+    res.status(200).send("Ticket generated successfully.");
+  } catch (error) {
+    console.error("Error generating ticket:", error);
+    res.status(500).send("Error generating ticket.");
+  }
+});
+
+// API Route for transfering ticket
+app.post("/api/transfer-ticket", (req, res) => {
+  console.log('transferAPICalled')
+  const SendernetID = req.body.SendernetID;
+  const eventID = req.body.eventID;
+  const ReceiverNetID = req.body.ReceiverNetID;
+
+  if (!SendernetID || !ReceiverNetID) {
+    return res.status(400).send("Missing parameters.");
+  }
+
+  try {
+    const hashedSenderNetID = Web3.utils.keccak256(SendernetID);
+    const hashedReceiverNetID = Web3.utils.keccak256(ReceiverNetID);
+    callWithFailover('transferTicket', hashedSenderNetID, hashedReceiverNetID, eventID);  // Call the backend function
+    res.status(200).send("Ticket transfered successfully.");
+  } catch (error) {
+    console.error("Error generating ticket:", error);
+    res.status(500).send("Error generating ticket.");
+  }
+});
+
+
+
+>>>>>>> frontend-2.0
 // CAS
 const UCONN_CAS = "https://login.uconn.edu/cas";
 const SERVICE_URL = process.env.SERVICE_URL || `http://localhost:${PORT}/login/callback`;
@@ -40,6 +97,7 @@ app.get("/login/callback", async (req, res) => {
     const response = await axios.get(validateUrl, { responseType: "text" });
 
     const userMatch = response.data.match(/<cas:user>(.*?)<\/cas:user>/);
+<<<<<<< HEAD
     const netID = userMatch[1];
     console.log(userMatch);
     
@@ -53,6 +111,13 @@ app.get("/login/callback", async (req, res) => {
       await db.execute("INSERT INTO users (netID) VALUES (?)", [netID]);
       console.log("NEW INSERTED");
       res.cookie("netID", netID);
+=======
+    if (userMatch) {
+      const netID = userMatch[1];
+      res.cookie("netID", netID);
+      res.redirect("/");
+    } else {
+>>>>>>> frontend-2.0
       res.redirect("/");
     }
   } catch (error) {
@@ -74,4 +139,8 @@ app.get("*", requireAuth, (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> frontend-2.0

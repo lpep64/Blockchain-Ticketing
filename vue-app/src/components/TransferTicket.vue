@@ -2,10 +2,18 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+<<<<<<< HEAD
+=======
+import axios from 'axios'
+>>>>>>> frontend-2.0
 
 // State variables
 const OldNetID = ref('')
 const NewNetID = ref('')
+<<<<<<< HEAD
+=======
+const eventid = ref('')
+>>>>>>> frontend-2.0
 const notificationMessage = ref('') // For feedback messages
 const showModal = ref(false)        // Controls modal visibility
 
@@ -16,6 +24,7 @@ const submitForm = async () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
 
+<<<<<<< HEAD
     try {
         // API request to transfer ticket
         const response = await fetch('https://generateticket-610385862744.us-central1.run.app/transfer', {
@@ -40,6 +49,17 @@ const submitForm = async () => {
         console.error('Network or fetch error:', error)
         notificationMessage.value = 'An error occurred. Please try again later.'
     }
+=======
+
+    const response = await axios.post('/api/transfer-ticket', {
+        SendernetID: OldNetID.value,
+        ReceiverNetID: NewNetID.value,
+        eventID: eventid.value
+    });
+    console.log('transfer response: ', response);
+
+    notificationMessage.value = "Transaction proccessing check back in a few minuets";
+>>>>>>> frontend-2.0
 
     // Show modal with feedback
     showModal.value = true
@@ -70,11 +90,22 @@ const transferTicket = () => {
                     <label for="NewNetID">New NetID:</label>
                     <input type="text" id="NewNetID" v-model="NewNetID" required />
                 </div>
+<<<<<<< HEAD
+=======
+                <div class="form-group">
+                    <label for="eventid">Event ID:</label>
+                    <input type="text" id="eventid" v-model="eventid" required />
+                </div>
+>>>>>>> frontend-2.0
                 <button type="submit">Transfer Ticket</button>
             </form>
             <button @click="transferTicket" class="transfer-button">Generate New Tickets</button>
 
+<<<<<<< HEAD
             <!-- Modal for feedback -->
+=======
+            <!-- Modal -->
+>>>>>>> frontend-2.0
             <div v-if="showModal" class="modal">
                 <div class="modal-content">
                     <span class="close" @click="closeModal">&times;</span>
@@ -93,9 +124,15 @@ const transferTicket = () => {
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
+<<<<<<< HEAD
     color: #0C2340;
     text-align: center;
     margin-top: 5rem;
+=======
+    color: #000E2F;
+    text-align: center;
+    margin: 0;
+>>>>>>> frontend-2.0
 }
 
 h1 {
@@ -108,7 +145,11 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+<<<<<<< HEAD
     background-color: #0C2340;
+=======
+    background-color: #000E2F;
+>>>>>>> frontend-2.0
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -151,7 +192,11 @@ button:hover {
 }
 
 .transfer-button {
+<<<<<<< HEAD
     background-color: #0C2340;
+=======
+    background-color: #000E2F;
+>>>>>>> frontend-2.0
     margin-top: 1rem;
 }
 
@@ -169,6 +214,10 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+<<<<<<< HEAD
+=======
+    z-index: 1000;
+>>>>>>> frontend-2.0
 }
 
 .modal-content {
@@ -176,10 +225,15 @@ button:hover {
     padding: 2rem;
     border-radius: 8px;
     text-align: center;
+<<<<<<< HEAD
+=======
+    position: relative;
+>>>>>>> frontend-2.0
 }
 
 .close {
     position: absolute;
+<<<<<<< HEAD
     top: 10px;
     right: 10px;
     font-size: 1.5rem;
@@ -187,3 +241,11 @@ button:hover {
     color: #000;
 }
 </style>
+=======
+    top: 0.5rem;
+    right: 0.5rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+</style>
+>>>>>>> frontend-2.0

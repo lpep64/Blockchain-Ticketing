@@ -14,3 +14,10 @@ handlers:
     upload: vue-app/dist/index.html
   - url: /
     static_dir: vue-app/dist
+<<<<<<< HEAD
+=======
+  - url: /api/generate-ticket
+    script: auto
+  - url: /api/transfer-ticket
+    script: auto
+>>>>>>> frontend-2.0
