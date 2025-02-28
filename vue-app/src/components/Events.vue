@@ -59,6 +59,8 @@ const toggleSport = (sport) => {
 }
 
 const showAddEventPopup = ref(false)
+const showErrorPopup = ref(false)
+const errorMessage = ref('')
 const newEvent = ref({
     sport: '',
     team: '',
@@ -76,12 +78,71 @@ const closeAddEventPopup = () => {
     showAddEventPopup.value = false
 }
 
+const closeErrorPopup = () => {
+    showErrorPopup.value = false
+}
+
+const validateEvent = () => {
+    if (!newEvent.value.sport) {
+        errorMessage.value = "Please select a sport"
+        return false
+    }
+    if (!newEvent.value.team) {
+        errorMessage.value = "Please enter a team name"
+        return false
+    }
+    if (!newEvent.value.date) {
+        errorMessage.value = "Please select a date and time"
+        return false
+    }
+    if (!newEvent.value.location) {
+        errorMessage.value = "Please select a location"
+        return false
+    }
+    if (!newEvent.value.ticketsOpen) {
+        errorMessage.value = "Please select when tickets open"
+        return false
+    }
+    return true
+}
+
 const addEvent = () => {
-    const { sport, team, date, time, location, ticketsOpen } = newEvent.value
+    if (!validateEvent()) {
+        showErrorPopup.value = true
+        return
+    }
+    
+    const { sport, team, date, location, ticketsOpen } = newEvent.value
     const title = `UConn vs. ${team}`
     const id = events.value.length + 1
-    events.value.push({ id, title, date, time, location, sport, ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`, ticketsOpen })
+    events.value.push({ 
+        id, 
+        title, 
+        date, 
+        location, 
+        sport, 
+        ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`, 
+        ticketsOpen 
+    })
+    
+    // Reset form
+    newEvent.value = {
+        sport: '',
+        team: '',
+        date: '',
+        time: '',
+        location: '',
+        ticketsOpen: ''
+    }
+    
     closeAddEventPopup()
+}
+
+// Click outside to close error popup
+const handleClickOutside = (e) => {
+    if (e.target.className === 'error-popup-overlay') {
+        closeErrorPopup()
+    }
 }
 </script>
 
@@ -118,6 +179,8 @@ const addEvent = () => {
                 <button @click="openAddEventPopup" class="add-event-button">Add Event</button>
             </div>
         </main>
+        
+        <!-- Add Event Popup -->
         <div v-if="showAddEventPopup" class="add-event-popup">
             <div class="popup-content">
                 <h2>Add Event</h2>
@@ -143,6 +206,16 @@ const addEvent = () => {
                 <input v-model="newEvent.ticketsOpen" type="datetime-local" />
                 <button @click="addEvent">Add</button>
                 <button @click="closeAddEventPopup">Close</button>
+            </div>
+        </div>
+        
+        <!-- Error Popup -->
+        <div v-if="showErrorPopup" class="error-popup-overlay" @click="handleClickOutside">
+            <div class="error-popup">
+                <div class="error-icon">❌</div>
+                <h3>ERROR</h3>
+                <p>{{ errorMessage }}</p>
+                <button @click="closeErrorPopup">OK</button>
             </div>
         </div>
     </div>
@@ -262,7 +335,7 @@ input[type="checkbox"] {
 .ticket-button {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #000E2F;
+    background-color: #1B2E67;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -274,7 +347,7 @@ input[type="checkbox"] {
 }
 
 .add-event-button {
-    background-color: #000E2F;
+    background-color: #1B2E67;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -339,6 +412,76 @@ input[type="checkbox"] {
 }
 
 .popup-content button:hover {
-    background-color: #0A1E30;
+    background-color: #E4002B;
+}
+
+/* Error Popup Styles */
+.error-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    font-family: Arial, sans-serif;
+}
+
+.error-popup {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    max-width: 90%;
+    animation: popup-fade 0.3s ease-in-out;
+    font-family: Arial, sans-serif;
+}
+
+.error-icon {
+    font-size: 2rem;
+    color: #E4002B;
+    margin-bottom: 1rem;
+}
+
+.error-popup h3 {
+    color: #000E2F;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.error-popup p {
+    color: #000E2F;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.error-popup button {
+    background-color: #000E2F;
+    color: white;
+    padding: 0.5rem 2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.error-popup button:hover {
+    background-color: #E4002B;
+}
+
+@keyframes popup-fade {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 </style>
