@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
 
+// Utility function to format date
 const formatDate = (datetime) => {
     const date = new Date(datetime);
     const options = {
@@ -11,15 +12,14 @@ const formatDate = (datetime) => {
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        hour12: true, // Use 12-hour clock (AM/PM)
+        hour12: true,
     };
     return date.toLocaleString('en-US', options);
 }
 
-
-
 const router = useRouter()
 
+// Sports categories
 const sports = ref([
     'Basketball', 'Football', 'Hockey', 'Soccer', 'Other'
 ])
@@ -29,6 +29,8 @@ const allsports = ref([
 ])
 
 const selectedSports = ref([]) // Allow multiple selections
+
+// Events data
 const events = ref([
     { id: 1, title: "UConn vs. Villanova", date: "2025-02-20T19:00", location: "Gampel Pavilion", sport: "Men's Basketball", ticketLink: "/buy-tickets/villanova", ticketsOpen: "2025-02-01T10:00" },
     { id: 2, title: "UConn vs. Duke", date: "2025-02-22T15:00", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/duke", ticketsOpen: "2025-02-02T10:00" },
@@ -40,6 +42,7 @@ const events = ref([
     { id: 8, title: "UConn Celebration", date: "2025-03-08T18:00", location: "Gampel Pavilion", sport: "Other", ticketLink: "/buy-tickets/celebration", ticketsOpen: "2025-02-08T10:00" }
 ])
 
+// Computed property to filter and sort events
 const filteredEvents = computed(() => {
     const sortedEvents = [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen))
     if (selectedSports.value.length === 0) {
@@ -50,6 +53,7 @@ const filteredEvents = computed(() => {
     })
 })
 
+// Toggle sport selection
 const toggleSport = (sport) => {
     if (selectedSports.value.includes(sport)) {
         selectedSports.value = selectedSports.value.filter(s => s !== sport)
@@ -58,6 +62,7 @@ const toggleSport = (sport) => {
     }
 }
 
+// Popup and form handling
 const showAddEventPopup = ref(false)
 const showErrorPopup = ref(false)
 const errorMessage = ref('')
@@ -82,12 +87,12 @@ const resetForm = () => {
 }
 
 const openAddEventPopup = () => {
-    resetForm() // Reset form when opening popup
+    resetForm()
     showAddEventPopup.value = true
 }
 
 const closeAddEventPopup = () => {
-    resetForm() // Reset form when closing popup
+    resetForm()
     showAddEventPopup.value = false
 }
 
@@ -95,6 +100,7 @@ const closeErrorPopup = () => {
     showErrorPopup.value = false
 }
 
+// Event validation
 const validateEvent = () => {
     if (!newEvent.value.sport) {
         errorMessage.value = "Please select a sport"
@@ -117,7 +123,6 @@ const validateEvent = () => {
         return false
     }
 
-    // Date validation
     const eventDate = new Date(newEvent.value.date)
     const currentDate = new Date()
     
@@ -131,17 +136,6 @@ const validateEvent = () => {
         return false
     }
     
-    if (!newEvent.value.location) {
-        errorMessage.value = "Please select a location"
-        return false
-    }
-    
-    if (!newEvent.value.ticketsOpen) {
-        errorMessage.value = "Please select when tickets open"
-        return false
-    }
-    
-    // Tickets open date validation
     const ticketsOpenDate = new Date(newEvent.value.ticketsOpen)
     
     if (isNaN(ticketsOpenDate.getTime())) {
@@ -162,6 +156,7 @@ const validateEvent = () => {
     return true
 }
 
+// Add new event
 const addEvent = () => {
     if (!validateEvent()) {
         showErrorPopup.value = true
@@ -181,13 +176,9 @@ const addEvent = () => {
         ticketsOpen 
     })
     
-    // Reset form
     resetForm()
-    
     closeAddEventPopup()
 }
-
-
 </script>
 
 <template>
@@ -302,8 +293,8 @@ const addEvent = () => {
 }
 
 h2 {
-    font-size: 2rem; /* Increase font size for h2 headers */
-    margin-bottom: 0.5rem; /* Reduce space below h2 headers */
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 ul {
@@ -315,7 +306,7 @@ ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    font-size: 1.25rem; /* Increase font size */
+    font-size: 1.25rem;
 }
 
 .sports-list li {
@@ -335,7 +326,7 @@ input[type="checkbox"] {
 }
 
 .events-list {
-    height: 30rem; /* Reduce the height of the upcoming events container */
+    height: 30rem;
     overflow-y: auto;
 }
 
@@ -354,9 +345,9 @@ input[type="checkbox"] {
     overflow: hidden;
     transition: transform 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: white; /* Change background color to white */
-    color: #000E2F; /* Change text color to #000E2F */
-    margin: 1rem 0; /* Add margin above and below */
+    background-color: white;
+    color: #000E2F;
+    margin: 1rem 0;
 }
 
 .event-details {
@@ -371,11 +362,11 @@ input[type="checkbox"] {
 
 .event-details p {
     margin-top: 5px;
-    color: #000E2F; /* Change text color to #000E2F */
+    color: #000E2F;
 }
 
 .tickets-open {
-    color: #7C878E; /* Set tickets open time and date color to dark grey */
+    color: #7C878E;
     margin-top: 10px;
 }
 
@@ -402,7 +393,6 @@ input[type="checkbox"] {
     cursor: pointer;
     margin-top: 1rem;
     margin-bottom: .5rem;
-    /* New styles to match ticket button */
     display: inline-block;
     font-size: 1rem;
     min-width: 120px;
@@ -433,9 +423,9 @@ input[type="checkbox"] {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 15px;
     width: 400px;
-    max-height: 90vh; /* Limit height to 90% of viewport height */
-    overflow-y: auto; /* Add scrolling if needed */
-    margin: 2rem; /* Add margin around the popup */
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 2rem;
 }
 
 .popup-content {

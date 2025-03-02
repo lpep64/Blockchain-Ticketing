@@ -7,6 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
+    "startfrontend": "node indexfrontonly.js",
     "startindex": "node index.js",
     "startdatabase": "node backend/backendServer.js",
     "start": "concurrently \"npm run startindex\" \"npm run startdatabase\""
