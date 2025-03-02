@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+import axios from 'axios'
 
 const netid = ref('')
 const eventid = ref('')
@@ -16,42 +17,15 @@ const submitForm = async () => {
     console.log('EventID:', eventid.value);
     console.log('SeatID:', seatid.value);
 
-    try {
-        const cloudRunURL = 'https://generateticket-610385862744.us-central1.run.app';
+    const response = await axios.post('/api/generate-ticket', {
+        netID: netid.value,
+        eventID: eventid.value,
+        seatInfo: seatid.value
+    });
+    console.log('Ticket Generation API response: ', response);
 
-        const response = await fetch(cloudRunURL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                // 'Authorization': `Bearer ${yourToken}` // Uncomment and set your token if needed
-            },
-            body: JSON.stringify({
-                netID: netid.value.trim(),
-                eventID: eventid.value.trim(),
-                seatID: seatid.value ? seatid.value.trim() : null
-            })
-        });
 
-        if (response.ok) {
-            try {
-                const data = await response.json();
-                if (data.ticketID) {
-                    notificationMessage.value = `Ticket generated successfully! Ticket ID: ${data.ticketID}`;
-                } else {
-                    notificationMessage.value = 'Ticket claimed successfully, but no Ticket ID was returned.';
-                }
-            } catch (error) {
-                console.warn('Response is not JSON:', error);
-                notificationMessage.value = 'Ticket claimed successfully. No additional information was returned.';
-            }
-        } else {
-            notificationMessage.value = `Error: ${response.status} ${response.statusText}`;
-        }
-    } catch (error) {
-        console.error('Network or Server Error:', error);
-        notificationMessage.value = 'An error occurred while claiming the ticket. Please try again later.';
-    }
-
+    notificationMessage.value = "Transaction processing check back in a few minutes";
     showModal.value = true;
 };
 
@@ -76,12 +50,12 @@ const transferTicket = () => {
                     <input type="text" id="netid" v-model="netid" required />
                 </div>
                 <div class="form-group">
-                    <label for="eventid">Event ID:</label>
-                    <input type="text" id="eventid" v-model="eventid" required />
-                </div>
-                <div class="form-group">
                     <label for="seatid">Seat ID (Optional):</label>
                     <input type="text" id="seatid" v-model="seatid" />
+                </div>
+                <div class="form-group">
+                    <label for="eventid">Event ID:</label>
+                    <input type="text" id="eventid" v-model="eventid" required />
                 </div>
                 <button type="submit">Generate Ticket</button>
             </form>
@@ -106,9 +80,9 @@ const transferTicket = () => {
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
-    color: #0C2340;
+    color: #000E2F;
     text-align: center;
-    margin-top: 5rem;
+    margin: 0;
 }
 
 h1 {
@@ -121,7 +95,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #0C2340;
+    background-color: #000E2F;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -164,12 +138,12 @@ button:hover {
 }
 
 .transfer-button {
-    background-color: #0C2340;
+    background-color: #000E2F;
     margin-top: 1rem;
 }
 
 .transfer-button:hover {
-    background-color: #0A1E30;
+    background-color: #000E2F;
 }
 
 .modal {
