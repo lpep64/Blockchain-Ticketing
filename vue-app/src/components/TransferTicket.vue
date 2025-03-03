@@ -84,15 +84,9 @@ const transferTicket = () => {
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
-<<<<<<< HEAD
     color: #000E2F;
     text-align: center;
     margin: 0;
-=======
-    color: #0C2340;
-    text-align: center;
-    margin-top: 5rem;
->>>>>>> origin/Private-network
 }
 
 h1 {
@@ -105,11 +99,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-<<<<<<< HEAD
     background-color: #000E2F;
-=======
-    background-color: #0C2340;
->>>>>>> origin/Private-network
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -152,11 +142,7 @@ button:hover {
 }
 
 .transfer-button {
-<<<<<<< HEAD
     background-color: #000E2F;
-=======
-    background-color: #0C2340;
->>>>>>> origin/Private-network
     margin-top: 1rem;
 }
 
