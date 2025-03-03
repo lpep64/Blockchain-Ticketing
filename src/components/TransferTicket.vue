@@ -2,44 +2,20 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
-import axios from 'axios'
 
-// State variables
 const OldNetID = ref('')
 const NewNetID = ref('')
-const eventid = ref('')
-const notificationMessage = ref('') // For feedback messages
-const showModal = ref(false)        // Controls modal visibility
 
 const router = useRouter()
 
-// Submit form logic
-const submitForm = async () => {
+const submitForm = () => {
     console.log('OldNetID:', OldNetID.value)
     console.log('NewNetID:', NewNetID.value)
-
-
-    const response = await axios.post('/api/transfer-ticket', {
-        SendernetID: OldNetID.value,
-        ReceiverNetID: NewNetID.value,
-        eventID: eventid.value
-    });
-    console.log('transfer response: ', response);
-
-    notificationMessage.value = "Transaction proccessing check back in a few minuets";
-
-    // Show modal with feedback
-    showModal.value = true
+    // Add your form submission logic here
 }
 
-// Close the modal
-const closeModal = () => {
-    showModal.value = false
-}
-
-// Navigate to ticket generation
 const transferTicket = () => {
-    router.push('/generate-ticket') // Navigate to the "Generate Ticket" page
+    router.push('/generate-ticket') // Use router to navigate
 }
 </script>
 
@@ -57,21 +33,9 @@ const transferTicket = () => {
                     <label for="NewNetID">New NetID:</label>
                     <input type="text" id="NewNetID" v-model="NewNetID" required />
                 </div>
-                <div class="form-group">
-                    <label for="eventid">Event ID:</label>
-                    <input type="text" id="eventid" v-model="eventid" required />
-                </div>
                 <button type="submit">Transfer Ticket</button>
             </form>
             <button @click="transferTicket" class="transfer-button">Generate New Tickets</button>
-
-            <!-- Modal -->
-            <div v-if="showModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" @click="closeModal">&times;</span>
-                    <p>{{ notificationMessage }}</p>
-                </div>
-            </div>
         </main>
     </div>
 </template>
@@ -84,15 +48,17 @@ const transferTicket = () => {
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #171717;
-<<<<<<< HEAD
-    color: #000E2F;
-    text-align: center;
-    margin: 0;
-=======
     color: #0C2340;
     text-align: center;
-    margin-top: 5rem;
->>>>>>> origin/Private-network
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    position: relative;
 }
 
 h1 {
@@ -105,11 +71,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-<<<<<<< HEAD
-    background-color: #000E2F;
-=======
     background-color: #0C2340;
->>>>>>> origin/Private-network
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -152,44 +114,11 @@ button:hover {
 }
 
 .transfer-button {
-<<<<<<< HEAD
-    background-color: #000E2F;
-=======
     background-color: #0C2340;
->>>>>>> origin/Private-network
     margin-top: 1rem;
 }
 
 .transfer-button:hover {
     background-color: #0A1E30;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    cursor: pointer;
-    font-size: 1.5rem;
 }
 </style>
