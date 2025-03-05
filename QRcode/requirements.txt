@@ -1,0 +1,5 @@
+qrcode[pil]
+pycryptodome
+flask
+web3
+pillow
