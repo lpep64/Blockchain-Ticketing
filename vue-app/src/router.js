@@ -18,6 +18,10 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+    scrollBehavior(to, from, savedPosition) {
+        // Always scroll to the top of the page on route change
+        return { top: 0, behavior: 'auto' }
+    }
 })
 
 export default router
