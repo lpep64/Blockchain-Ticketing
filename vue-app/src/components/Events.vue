@@ -184,8 +184,8 @@ const addEvent = async () => {
     }
 
     try {
-        await axios.post('/api/events', newEventData) // Replace with your API endpoint
-        events.value.push(newEventData)
+        //await axios.post('/api/events', newEventData) // Replace with your API endpoint
+        //events.value.push(newEventData)
         resetForm()
         closeAddEventPopup()
     } catch (error) {
