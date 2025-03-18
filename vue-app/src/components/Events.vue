@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+import axios from 'axios' // Import axios for API calls
 
 // Utility function to format date
 const formatDate = (datetime) => {
@@ -19,7 +20,7 @@ const formatDate = (datetime) => {
 
 const router = useRouter()
 
-// Sports categories
+// Static sports categories
 const sports = ref([
     'Basketball', 'Football', 'Hockey', 'Soccer', 'Other'
 ])
@@ -30,17 +31,23 @@ const allsports = ref([
 
 const selectedSports = ref([]) // Allow multiple selections
 
-// Events data
-const events = ref([
-    { id: 1, title: "UConn vs. Villanova", date: "2025-02-20T19:00", location: "Gampel Pavilion", sport: "Men's Basketball", ticketLink: "/buy-tickets/villanova", ticketsOpen: "2025-02-01T10:00" },
-    { id: 2, title: "UConn vs. Duke", date: "2025-02-22T15:00", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/duke", ticketsOpen: "2025-02-02T10:00" },
-    { id: 3, title: "UConn vs. Boston College", date: "2025-02-25T20:00", location: "Toscano Family Ice Forum", sport: "Women's Hockey", ticketLink: "/buy-tickets/hockey-bc", ticketsOpen: "2025-02-03T10:00" },
-    { id: 4, title: "UConn vs. Syracuse", date: "2025-02-27T19:00", location: "Gampel Pavilion", sport: "Women's Basketball", ticketLink: "/buy-tickets/syracuse", ticketsOpen: "2025-02-04T10:00" },
-    { id: 5, title: "UConn vs. Alabama", date: "2025-03-01T15:00", location: "Pratt & Whitney Stadium", sport: "Football", ticketLink: "/buy-tickets/alabama", ticketsOpen: "2025-02-05T10:00" },
-    { id: 6, title: "UConn vs. Providence", date: "2025-03-04T20:00", location: "Toscano Family Ice Forum", sport: "Men's Hockey", ticketLink: "/buy-tickets/hockey-providence", ticketsOpen: "2025-02-06T10:00" },
-    { id: 7, title: "UConn vs. Boston College", date: "2025-03-06T19:00", location: "Morrone Stadium", sport: "Men's Soccer", ticketLink: "/buy-tickets/soccer-bc", ticketsOpen: "2025-02-07T10:00" },
-    { id: 8, title: "UConn Celebration", date: "2025-03-08T18:00", location: "Gampel Pavilion", sport: "Other", ticketLink: "/buy-tickets/celebration", ticketsOpen: "2025-02-08T10:00" }
-])
+// Dynamic events data
+const events = ref([])
+
+// Fetch events from API
+const fetchEvents = async () => {
+    try {
+        const response = await axios.get('/api/events') // Replace with your API endpoint
+        events.value = response.data.events
+    } catch (error) {
+        console.error('Error fetching events:', error)
+    }
+}
+
+// Fetch events on component mount
+onMounted(() => {
+    fetchEvents()
+})
 
 // Computed property to filter and sort events
 const filteredEvents = computed(() => {
@@ -157,7 +164,7 @@ const validateEvent = () => {
 }
 
 // Add new event
-const addEvent = () => {
+const addEvent = async () => {
     if (!validateEvent()) {
         showErrorPopup.value = true
         return
@@ -166,7 +173,7 @@ const addEvent = () => {
     const { sport, team, date, location, ticketsOpen } = newEvent.value
     const title = `UConn vs. ${team}`
     const id = events.value.length + 1
-    events.value.push({ 
+    const newEventData = { 
         id, 
         title, 
         date, 
@@ -174,10 +181,18 @@ const addEvent = () => {
         sport, 
         ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`, 
         ticketsOpen 
-    })
-    
-    resetForm()
-    closeAddEventPopup()
+    }
+
+    try {
+        await axios.post('/api/events', newEventData) // Replace with your API endpoint
+        events.value.push(newEventData)
+        resetForm()
+        closeAddEventPopup()
+    } catch (error) {
+        console.error('Error adding event:', error)
+        errorMessage.value = "Failed to add event. Please try again."
+        showErrorPopup.value = true
+    }
 }
 </script>
 
