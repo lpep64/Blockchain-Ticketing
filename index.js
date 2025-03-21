@@ -3,16 +3,37 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import db from "./backend/database/databaseConnector.js";
+// import db from "./backend/database/databaseConnector.js";
 import Web3 from 'web3'
 import callWithFailover from './backend/blockchain/nodeInterface.js'
+import events from './defaultEvents.js'
 
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
 
+// API Route for getting events
+// Need to have this query the databse
+app.get("/api/getEvents", (req, res) => {
+  console.log('getEventsAPICalled');
+  try{
+    console.log(req.body);
+    const filter = req.body.filter;
+    let eventsCopy = events;
+    if (filter) {
+      eventsCopy = events.filter(event => event.category === filter);
+    } 
+    res.json(eventsCopy);
+  }catch (error) {
+    console.log("error fetching events: ", error);
+    res.status(500).send("error fetching events");
+  }
+});
+
+
 // API Routes for ticket interaction
+// this generates a ticket on the blockchain, meaning it should be used to claim a ticket
 app.post("/api/generate-ticket", (req, res) => {
   console.log('generateAIPCalled');
   console.log(req.body);
@@ -98,6 +119,7 @@ app.get("/login/callback", async (req, res) => {
     } 
 
     // Database portion
+    /*
     const netID = userMatch[1];
     console.log(userMatch);
     
@@ -112,6 +134,7 @@ app.get("/login/callback", async (req, res) => {
       console.log("NEW INSERTED");
       res.cookie("netID", netID);
     }
+    */
   
   }catch (error) {
     console.error("Error validating ticket:", error);

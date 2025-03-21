@@ -37,12 +37,12 @@ const events = ref([])
 // Fetch events from API
 const fetchEvents = async () => {
     try {
-        const response = await axios.get('/api/events') // Replace with your API endpoint
-        events.value = response.data.events
+        const response = await fetch(`/api/getEvents`); // Replace with your API endpoint
+        events.value = await response.json(); // Await the JSON response
     } catch (error) {
-        console.error('Error fetching events:', error)
+        console.error('Error fetching events:', error);
     }
-}
+};
 
 // Fetch events on component mount
 onMounted(() => {

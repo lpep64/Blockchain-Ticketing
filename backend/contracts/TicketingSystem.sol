@@ -1,4 +1,5 @@
 
+
 // This contract generates a unique ticket for each user and stores it on the blockchain.
 
 // SPDX-License-Identifier: MIT
@@ -10,25 +11,27 @@ contract TicketingSystem {
     struct Ticket{ //structure for ticket - contains all data we want stored on contract
         uint256 id;
         uint256 eventId;
-        string seatInfo;
         bytes32 owner;  //hashed netID
+        bytes16 seatInfo;
     }
 
     mapping(bytes32 => Ticket[]) public tickets; //maps a hashed netID to their owned tickets
+    mapping(uint256 => Ticket) public ticketIDs;
     // we need to make sure that users are able to hold multiple tickets
 
-    // event TicketGenerated(uint256 id, uint256 eventId, string seatInfo, bytes32 owner); // event for something to listen to, will trigger an event when a ticket is generated
-    // event TicketTransfered(bytes32 sender, bytes32 newOwner, uint256 id, uint256 eventId, string seatInfo); // event for a ticket transfer
+    event newOwner(uint256 id, bytes32 owner, uint256 eventID, bytes16 seatInfo);
 
-    function generateTicket(bytes32 netID, uint256 givenEventID, string memory givenSeatInfo) public {
+    function generateTicket(bytes32 netID, uint256 givenEventID, bytes16 givenSeatInfo) public{
         ticketCount += 1;
-        Ticket memory newTicket = Ticket({id: ticketCount, eventId: givenEventID, seatInfo: givenSeatInfo, owner: netID});
+        Ticket memory newTicket = Ticket({id: ticketCount, eventId: givenEventID, owner: netID, seatInfo: givenSeatInfo});
+        ticketIDs[ticketCount] = newTicket;
         tickets[netID].push(newTicket);
-        // emit TicketGenerated(newTicket.id, newTicket.eventId, newTicket.seatInfo, netID);
+        emit newOwner(newTicket.id, netID, givenEventID, givenSeatInfo);
     }
 
-    function getTicketsByNetID(bytes32 netID) public view returns (Ticket[] memory){
-        return tickets[netID];
+    function getTicketsByNetID(bytes32 netID) public view returns(Ticket[] memory){
+        Ticket[] memory userTickets = tickets[netID];
+        return userTickets;
     }
 
 // logic for transfering ticket
@@ -42,7 +45,10 @@ contract TicketingSystem {
         tickets[netIDSender].pop();
         tempTicket.owner = netIDRecipient;
         tickets[netIDRecipient].push(tempTicket);
-        // emit TicketTransfered(netIDSender, netIDRecipient, tempTicket.id, tempTicket.eventId, tempTicket.seatInfo);
+
+        ticketIDs[tempTicket.id].owner = netIDRecipient;
+
+        emit newOwner(tempTicket.id, tempTicket.owner, tempTicket.eventId, tempTicket.seatInfo);
     }
 
     function ticketIndexFinder(uint256 eventId, bytes32 user) internal view returns (int){ //checks if a given user has a ticket for an event
@@ -52,5 +58,9 @@ contract TicketingSystem {
             }
         }
         return -1; //returns -1 if ticket is not found
+    }
+
+    function getTicketByID(uint256 id) public view returns(bytes32){
+        return ticketIDs[id].owner;
     }
 }

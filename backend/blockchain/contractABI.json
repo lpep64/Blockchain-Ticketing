@@ -1,5 +1,36 @@
 [
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "owner",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "eventID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes16",
+        "name": "seatInfo",
+        "type": "bytes16"
+      }
+    ],
+    "name": "newOwner",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -12,14 +43,33 @@
         "type": "uint256"
       },
       {
-        "internalType": "string",
+        "internalType": "bytes16",
         "name": "givenSeatInfo",
-        "type": "string"
+        "type": "bytes16"
       }
     ],
     "name": "generateTicket",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTicketByID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -45,14 +95,14 @@
             "type": "uint256"
           },
           {
-            "internalType": "string",
-            "name": "seatInfo",
-            "type": "string"
-          },
-          {
             "internalType": "bytes32",
             "name": "owner",
             "type": "bytes32"
+          },
+          {
+            "internalType": "bytes16",
+            "name": "seatInfo",
+            "type": "bytes16"
           }
         ],
         "internalType": "struct TicketingSystem.Ticket[]",
@@ -71,6 +121,40 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "ticketIDs",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eventId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "owner",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes16",
+        "name": "seatInfo",
+        "type": "bytes16"
       }
     ],
     "stateMutability": "view",
@@ -102,14 +186,14 @@
         "type": "uint256"
       },
       {
-        "internalType": "string",
-        "name": "seatInfo",
-        "type": "string"
-      },
-      {
         "internalType": "bytes32",
         "name": "owner",
         "type": "bytes32"
+      },
+      {
+        "internalType": "bytes16",
+        "name": "seatInfo",
+        "type": "bytes16"
       }
     ],
     "stateMutability": "view",
