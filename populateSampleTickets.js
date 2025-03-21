@@ -1,4 +1,7 @@
+import { response } from 'express';
 import callWithFailover from './backend/blockchain/nodeInterface.js'
+import Web3 from 'web3'
+import blockTicketToRealTicket from './backend/blockchain/convertBCTicket.js'
 
 function toBytes16(str) {
     const buf = Buffer.alloc(16); // Create a 16-byte buffer filled with 0x00
@@ -7,17 +10,21 @@ function toBytes16(str) {
     return buf;
 }
 
-function fromBytes16(buf) {
-    const unBuff = buf.substring(2);
-    const charArray = unBuff.match(/.{1,2}/g) || [];
-    const str = String.fromCharCode(...charArray.map(hex => parseInt(hex, 16)));
-    return str;
-
-}
-
 const eventIDs = [1, 3, 4];
 const seatInfos = ["GenAd", "Sec104:A14", "GenAd"];
-const endcodedSeatInfos = seatInfos.map(info => toBytes16(info));
+const encodedSeatInfos = seatInfos.map(info => toBytes16(info));
 
 console.log(eventIDs);
 console.log(encodedSeatInfos);
+
+const netID = 'smf21001'
+const hashedNetID = Web3.utils.keccak256(netID);
+
+for(let i = 0; i < eventIDs.length; i++){
+    // await callWithFailover('generateTicket', hashedNetID, eventIDs[i], encodedSeatInfos[i])
+}
+
+const responseNew = await callWithFailover('getTicketsByNetID', hashedNetID);
+for(let i = 0; i< responseNew.length; i++){
+    console.log(blockTicketToRealTicket(responseNew[i].eventId, responseNew[i].seatInfo, responseNew[i].id));
+}

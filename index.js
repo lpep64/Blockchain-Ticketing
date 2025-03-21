@@ -7,11 +7,25 @@ import { fileURLToPath } from "url";
 import Web3 from 'web3'
 import callWithFailover from './backend/blockchain/nodeInterface.js'
 import events from './defaultEvents.js'
+import blockTicketToRealTicket from './backend/blockchain/convertBCTicket.js'
 
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
+app.use(cookieParser());
+
+//Get netID from the cookie
+app.get("/api/getNetID", (req, res) => {
+  try{
+    console.log(req.cookies.netID);
+    res.json({ netID: req.cookies.netID || null });
+  } catch (error){
+    console.log("error fetching netID throuh cookie", error);
+    res.status(500).send('error fetching your netID');
+  }
+});
+
 
 // API Route for getting events
 // Need to have this query the databse
@@ -33,6 +47,28 @@ app.get("/api/getEvents", (req, res) => {
 
 
 // API Routes for ticket interaction
+app.get("/api/ticketsByNetID", async (req, res) => {
+  console.log('getTicketsAPICalled');
+  try {
+    const netID = req.query.netID || req.headers.netID;
+    console.log("Received netID:", netID);
+    const hashedNetID = Web3.utils.keccak256(netID);
+    const rawTickets = await callWithFailover('getTicketsByNetID', hashedNetID);
+    let tickets = [];
+    for(let i = 0; i < rawTickets.length; i++){
+      const newTicket = blockTicketToRealTicket(rawTickets[i].eventId, rawTickets[i].seatInfo, rawTickets[i].id);
+      tickets.push(newTicket);
+    }
+    console.log(tickets);
+    res.json(tickets);
+  } catch (error) {
+    console.error("Error fetching tickets:", error);
+    res.status(500).send("Error fetching tickets");
+  }
+});
+
+
+
 // this generates a ticket on the blockchain, meaning it should be used to claim a ticket
 app.post("/api/generate-ticket", (req, res) => {
   console.log('generateAIPCalled');

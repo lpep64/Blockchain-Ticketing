@@ -26,12 +26,17 @@ const tickets = ref([])
 // Fetch tickets from API
 const fetchTickets = async () => {
   try {
-    //const response = await axios.get('/api/tickets') // Replace with your API endpoint
-    //tickets.value = response.data.tickets
+    const netIDResponse = await axios.get('/api/getNetID');
+    const netID = netIDResponse.data.netID;
+
+    const response = await axios.get(`/api/ticketsByNetID?netID=${netID}`);
+    tickets.value = await response.data;
+    console.log("Fetched tickets:", response.data);
   } catch (error) {
-    console.error('Error fetching tickets:', error)
+    console.error("Error fetching tickets:", error);
   }
-}
+};
+
 
 // Fetch tickets on component mount
 onMounted(() => {
