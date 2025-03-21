@@ -57,7 +57,8 @@ onMounted(() => {
               <div class="ticket-details">
                 <h2>{{ ticket.sport }}: {{ ticket.title }}</h2>
                 <p>{{ formatDate(ticket.date) }} | {{ ticket.location }}</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=Placeholder" alt="Ticket QR Code" class="qr-code" />
+                <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
+                      alt="Ticket QR Code" class="qr-code" />
               </div>
             </li>
           </ul>

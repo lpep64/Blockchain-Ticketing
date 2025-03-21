@@ -21,10 +21,5 @@ const netID = 'smf21001'
 const hashedNetID = Web3.utils.keccak256(netID);
 
 for(let i = 0; i < eventIDs.length; i++){
-    // await callWithFailover('generateTicket', hashedNetID, eventIDs[i], encodedSeatInfos[i])
-}
-
-const responseNew = await callWithFailover('getTicketsByNetID', hashedNetID);
-for(let i = 0; i< responseNew.length; i++){
-    console.log(blockTicketToRealTicket(responseNew[i].eventId, responseNew[i].seatInfo, responseNew[i].id));
+    await callWithFailover('generateTicket', hashedNetID, eventIDs[i], encodedSeatInfos[i])
 }

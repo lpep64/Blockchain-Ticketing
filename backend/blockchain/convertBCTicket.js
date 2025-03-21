@@ -10,11 +10,11 @@ function fromBytes16(buf) {
 
 }
 
-function blockTicketToRealTicket(eventID, seatInfo, ticketID){
+function blockTicketToRealTicket(eventID, seatInfo, ticketID, hashedNetID){
     try{
         const foundEvent = events.find(event => event.ID === Number(eventID));
         const stringSeatInfo = fromBytes16(seatInfo);
-        const QRCode = String(ticketID) //replace with actual QR code generator seeded from ticketID
+        const QRCode = String(ticketID) + "$$$" + hashedNetID; //replace with actual QR code generator seeded from ticketID
         console.log(eventID)
         return{
             sport: foundEvent.sport,

@@ -56,7 +56,7 @@ app.get("/api/ticketsByNetID", async (req, res) => {
     const rawTickets = await callWithFailover('getTicketsByNetID', hashedNetID);
     let tickets = [];
     for(let i = 0; i < rawTickets.length; i++){
-      const newTicket = blockTicketToRealTicket(rawTickets[i].eventId, rawTickets[i].seatInfo, rawTickets[i].id);
+      const newTicket = blockTicketToRealTicket(rawTickets[i].eventId, rawTickets[i].seatInfo, rawTickets[i].id, hashedNetID);
       tickets.push(newTicket);
     }
     console.log(tickets);

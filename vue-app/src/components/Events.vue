@@ -219,7 +219,7 @@ const addEvent = async () => {
                             <div class="event-details">
                                 <h2>{{ event.sport }}: {{ event.title }}</h2>
                                 <p>{{ formatDate(event.date) }} | {{ event.location }}</p>
-                                <a :href="event.ticketLink" class="ticket-button">Buy Tickets</a>
+                                <a :href="event.ticketLink" class="ticket-button">Claim Tickets</a>
                                 <p class="tickets-open">Tickets Open: {{ formatDate(event.ticketsOpen) }}</p>
                             </div>
                         </li>
