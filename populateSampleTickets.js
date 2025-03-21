@@ -1,7 +1,8 @@
-import { response } from 'express';
 import callWithFailover from './backend/blockchain/nodeInterface.js'
 import Web3 from 'web3'
-import blockTicketToRealTicket from './backend/blockchain/convertBCTicket.js'
+
+//PLACEHOLDER
+// once a way to claim a ticket is implemented this file is no longer needed
 
 function toBytes16(str) {
     const buf = Buffer.alloc(16); // Create a 16-byte buffer filled with 0x00

@@ -1,5 +1,8 @@
 // sport options 'Men\'s Basketball', 'Women\'s Basketball', 'Football', 'Men\'s Hockey', 'Women\'s Hockey', 'Men\'s Soccer', 'Women\'s Soccer', 'Other'
 
+// PLACEHOLDER
+// this acts as a events database while the real database is being implemented
+
 const events = [
     {
         title: "UConn vs Vilanova",

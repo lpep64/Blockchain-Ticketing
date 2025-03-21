@@ -32,12 +32,8 @@ app.get("/api/getNetID", (req, res) => {
 app.get("/api/getEvents", (req, res) => {
   console.log('getEventsAPICalled');
   try{
-    console.log(req.body);
-    const filter = req.body.filter;
-    let eventsCopy = events;
-    if (filter) {
-      eventsCopy = events.filter(event => event.category === filter);
-    } 
+    console.log(req.body); //Here just fetch all the events from the DB, filtering is handled on the frontend
+    const eventsCopy = events;
     res.json(eventsCopy);
   }catch (error) {
     console.log("error fetching events: ", error);
@@ -59,7 +55,7 @@ app.get("/api/ticketsByNetID", async (req, res) => {
       const newTicket = blockTicketToRealTicket(rawTickets[i].eventId, rawTickets[i].seatInfo, rawTickets[i].id, hashedNetID);
       tickets.push(newTicket);
     }
-    console.log(tickets);
+    // console.log(tickets);
     res.json(tickets);
   } catch (error) {
     console.error("Error fetching tickets:", error);
