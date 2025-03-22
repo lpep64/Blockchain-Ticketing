@@ -59,6 +59,7 @@ onMounted(() => {
                 <p>{{ formatDate(ticket.date) }} | {{ ticket.location }}</p>
                 <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
                       alt="Ticket QR Code" class="qr-code" />
+                <button @click="" class="transfer-button">Transfer Ticket</button>
               </div>
             </li>
           </ul>
@@ -157,4 +158,19 @@ ul {
   margin: 10px auto;
   display: block;
 }
+
+.transfer-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1B2E67;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.transfer-button:hover {
+    background-color: #E4002B;
+}
+
 </style>

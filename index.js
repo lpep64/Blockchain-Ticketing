@@ -63,16 +63,18 @@ app.get("/api/ticketsByNetID", async (req, res) => {
   }
 });
 
+function toBytes16(str) {
+  const buf = Buffer.alloc(16); // Create a 16-byte buffer filled with 0x00
+  const strBytes = Buffer.from(str, 'utf8'); // Convert string to bytes
+  strBytes.copy(buf, 16 - strBytes.length); // Copy bytes to the end
+  return buf;
+}
 
-
-// this generates a ticket on the blockchain, meaning it should be used to claim a ticket
-app.post("/api/generate-ticket", (req, res) => {
+app.post("/api/claimTicket", async (req, res) => {
   console.log('generateAIPCalled');
-  console.log(req.body);
   const netID = req.body.netID;
   const eventID = req.body.eventID;
-  const seatInfo = req.body.seatInfo;
-  console.log(netID)
+  const seatInfo = toBytes16("GA");
 
   if (!netID || !eventID || !seatInfo) {
     return res.status(400).send("Missing parameters.");
@@ -80,11 +82,17 @@ app.post("/api/generate-ticket", (req, res) => {
 
   try {
     const hashedNetID = Web3.utils.keccak256(netID);
-    callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
-    res.status(200).send("Ticket generated successfully.");
+    const tickets = await callWithFailover('getTicketsByNetID', hashedNetID);
+    for(let i = 0; i < tickets.length; i++){
+      if(eventID == tickets[i].eventId){
+        return res.status(200).send("You already have a ticket for this event.");
+      }
+    }
+    await callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
+    res.status(200).send("Ticket claimed successfully.");
   } catch (error) {
-    console.error("Error generating ticket:", error);
-    res.status(500).send("Error generating ticket.");
+    console.error("Error claiming ticket:", error);
+    res.status(500).json({ error: error.message || "Error claiming ticket" });
   }
 });
 

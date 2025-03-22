@@ -16,7 +16,6 @@ function blockTicketToRealTicket(eventID, seatInfo, ticketID, hashedNetID){
         const foundEvent = events.find(event => event.ID === Number(eventID)); //TODO: DB, query to find the corresponding event based on ID
         const stringSeatInfo = fromBytes16(seatInfo);
         const QRCode = String(ticketID) + "$$$" + hashedNetID; //replace with actual QR code generator seeded from ticketID
-        console.log(eventID)
         return{
             sport: foundEvent.sport,
             title: foundEvent.title,
