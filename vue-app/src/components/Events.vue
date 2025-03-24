@@ -37,12 +37,26 @@ const events = ref([])
 // Fetch events from API
 const fetchEvents = async () => {
     try {
-        const response = await axios.get('/api/events') // Replace with your API endpoint
-        events.value = response.data.events
+        const response = await fetch(`/api/getEvents`); // Replace with your API endpoint
+        events.value = await response.json(); // Await the JSON response
     } catch (error) {
-        console.error('Error fetching events:', error)
+        console.error('Error fetching events:', error);
     }
-}
+};
+
+// Claim a ticket
+const claimTicket = async (eID) => {
+    try {
+        console.log(eID)
+        const netID = (await axios.get("/api/getNetID")).data.netID
+        const response = await axios.post("/api/claimTicket", { netID: netID, eventID: eID });
+        console.log(response);
+        alert(response.data);
+    } catch (error) {
+        console.error('Error claiming ticket:');
+        alert('Error claiming ticket. Please try again later.');
+    }
+};
 
 // Fetch events on component mount
 onMounted(() => {
@@ -215,11 +229,11 @@ const addEvent = async () => {
                 <div>
                     <h2>Upcoming Events</h2>
                     <ul class="events-list">
-                        <li v-for="event in filteredEvents" :key="event.id" class="event-card">
+                        <li v-for="event in filteredEvents" :key="event.ID" class="event-card">
                             <div class="event-details">
                                 <h2>{{ event.sport }}: {{ event.title }}</h2>
                                 <p>{{ formatDate(event.date) }} | {{ event.location }}</p>
-                                <a :href="event.ticketLink" class="ticket-button">Buy Tickets</a>
+                                <button @click="claimTicket(event.ID)" class="ticket-button">Claim Ticket</button>
                                 <p class="tickets-open">Tickets Open: {{ formatDate(event.ticketsOpen) }}</p>
                             </div>
                         </li>

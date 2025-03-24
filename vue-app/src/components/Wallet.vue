@@ -26,12 +26,17 @@ const tickets = ref([])
 // Fetch tickets from API
 const fetchTickets = async () => {
   try {
-    //const response = await axios.get('/api/tickets') // Replace with your API endpoint
-    //tickets.value = response.data.tickets
+    const netIDResponse = await axios.get('/api/getNetID');
+    const netID = netIDResponse.data.netID;
+
+    const response = await axios.get(`/api/ticketsByNetID?netID=${netID}`);
+    tickets.value = await response.data;
+    console.log("Fetched tickets:", response.data);
   } catch (error) {
-    console.error('Error fetching tickets:', error)
+    console.error("Error fetching tickets:", error);
   }
-}
+};
+
 
 // Fetch tickets on component mount
 onMounted(() => {
@@ -52,7 +57,9 @@ onMounted(() => {
               <div class="ticket-details">
                 <h2>{{ ticket.sport }}: {{ ticket.title }}</h2>
                 <p>{{ formatDate(ticket.date) }} | {{ ticket.location }}</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=Placeholder" alt="Ticket QR Code" class="qr-code" />
+                <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
+                      alt="Ticket QR Code" class="qr-code" />
+                <button @click="" class="transfer-button">Transfer Ticket</button>
               </div>
             </li>
           </ul>
@@ -151,4 +158,19 @@ ul {
   margin: 10px auto;
   display: block;
 }
+
+.transfer-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1B2E67;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.transfer-button:hover {
+    background-color: #E4002B;
+}
+
 </style>

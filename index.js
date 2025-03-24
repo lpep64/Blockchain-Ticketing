@@ -3,23 +3,78 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import db from "./backend/database/databaseConnector.js";
+// import db from "./backend/database/databaseConnector.js";
 import Web3 from 'web3'
 import callWithFailover from './backend/blockchain/nodeInterface.js'
+import events from './defaultEvents.js'
+import blockTicketToRealTicket from './backend/blockchain/convertBCTicket.js'
 
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
+app.use(cookieParser());
+
+//Get netID from the cookie
+app.get("/api/getNetID", (req, res) => {
+  try{
+    console.log(req.cookies.netID);
+    res.json({ netID: req.cookies.netID || null });
+  } catch (error){
+    console.log("error fetching netID throuh cookie", error);
+    res.status(500).send('error fetching your netID');
+  }
+});
+
+
+// API Route for getting events
+// Need to have this query the databse
+app.get("/api/getEvents", (req, res) => {
+  console.log('getEventsAPICalled');
+  try{
+    console.log(req.body); //Here just fetch all the events from the DB, filtering is handled on the frontend
+    const eventsCopy = events;
+    res.json(eventsCopy);
+  }catch (error) {
+    console.log("error fetching events: ", error);
+    res.status(500).send("error fetching events");
+  }
+});
+
 
 // API Routes for ticket interaction
-app.post("/api/generate-ticket", (req, res) => {
+app.get("/api/ticketsByNetID", async (req, res) => {
+  console.log('getTicketsAPICalled');
+  try {
+    const netID = req.query.netID || req.headers.netID;
+    console.log("Received netID:", netID);
+    const hashedNetID = Web3.utils.keccak256(netID);
+    const rawTickets = await callWithFailover('getTicketsByNetID', hashedNetID);
+    let tickets = [];
+    for(let i = 0; i < rawTickets.length; i++){
+      const newTicket = blockTicketToRealTicket(rawTickets[i].eventId, rawTickets[i].seatInfo, rawTickets[i].id, hashedNetID);
+      tickets.push(newTicket);
+    }
+    // console.log(tickets);
+    res.json(tickets);
+  } catch (error) {
+    console.error("Error fetching tickets:", error);
+    res.status(500).send("Error fetching tickets");
+  }
+});
+
+function toBytes16(str) {
+  const buf = Buffer.alloc(16); // Create a 16-byte buffer filled with 0x00
+  const strBytes = Buffer.from(str, 'utf8'); // Convert string to bytes
+  strBytes.copy(buf, 16 - strBytes.length); // Copy bytes to the end
+  return buf;
+}
+
+app.post("/api/claimTicket", async (req, res) => {
   console.log('generateAIPCalled');
-  console.log(req.body);
   const netID = req.body.netID;
   const eventID = req.body.eventID;
-  const seatInfo = req.body.seatInfo;
-  console.log(netID)
+  const seatInfo = toBytes16("GA");
 
   if (!netID || !eventID || !seatInfo) {
     return res.status(400).send("Missing parameters.");
@@ -27,11 +82,17 @@ app.post("/api/generate-ticket", (req, res) => {
 
   try {
     const hashedNetID = Web3.utils.keccak256(netID);
-    callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
-    res.status(200).send("Ticket generated successfully.");
+    const tickets = await callWithFailover('getTicketsByNetID', hashedNetID);
+    for(let i = 0; i < tickets.length; i++){
+      if(eventID == tickets[i].eventId){
+        return res.status(200).send("You already have a ticket for this event.");
+      }
+    }
+    await callWithFailover('generateTicket', hashedNetID, eventID, seatInfo);  // Call the backend function
+    res.status(200).send("Ticket claimed successfully.");
   } catch (error) {
-    console.error("Error generating ticket:", error);
-    res.status(500).send("Error generating ticket.");
+    console.error("Error claiming ticket:", error);
+    res.status(500).json({ error: error.message || "Error claiming ticket" });
   }
 });
 
@@ -98,6 +159,7 @@ app.get("/login/callback", async (req, res) => {
     } 
 
     // Database portion
+    /*
     const netID = userMatch[1];
     console.log(userMatch);
     
@@ -112,6 +174,7 @@ app.get("/login/callback", async (req, res) => {
       console.log("NEW INSERTED");
       res.cookie("netID", netID);
     }
+    */
   
   }catch (error) {
     console.error("Error validating ticket:", error);
