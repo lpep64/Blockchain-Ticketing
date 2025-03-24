@@ -38,6 +38,21 @@ const fetchTickets = async () => {
 };
 
 
+const unclaimTicket = async (eID) => {
+  try {
+    const netID = (await axios.get("/api/getNetID")).data.netID
+
+    const response = await axios.post(`/api/unclaimTicket?netID=${netID}&eventID=${eID}`);
+    console.log("Unclaimed Ticket", response.data);
+    alert(response.data);
+    await fetchTickets();
+  } catch (error) {
+    console.error("Error Unclaiming Ticket: ", error)
+    alert(error);
+  }
+}
+
+
 // Fetch tickets on component mount
 onMounted(() => {
   fetchTickets()
@@ -59,7 +74,7 @@ onMounted(() => {
                 <p>{{ formatDate(ticket.date) }} | {{ ticket.location }}</p>
                 <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
                       alt="Ticket QR Code" class="qr-code" />
-                <button @click="" class="transfer-button">Transfer Ticket</button>
+                <button @click="unclaimTicket(ticket.eventID)" class="unclaim-button">Unclaim Ticket</button>
               </div>
             </li>
           </ul>
@@ -159,7 +174,7 @@ ul {
   display: block;
 }
 
-.transfer-button {
+.unclaim-button {
     display: inline-block;
     padding: 10px 20px;
     background-color: #1B2E67;
@@ -169,7 +184,7 @@ ul {
     margin-top: 10px;
 }
 
-.transfer-button:hover {
+.unclaim-button:hover {
     background-color: #E4002B;
 }
 
