@@ -29,6 +29,16 @@ contract TicketingSystem {
         emit newOwner(newTicket.id, netID, givenEventID, givenSeatInfo);
     }
 
+    function unclaimTicket(bytes32 netID, uint256 givenEventID) public {
+        int index = ticketIndexFinder(givenEventID, netID);
+        require(index != -1, "User does not have a ticket to this event");
+        uint256 id = tickets[netID][uint256(index)].id;
+        delete ticketIDs[id];
+        tickets[netID][uint256(index)] = tickets[netID][tickets[netID].length - 1];
+        tickets[netID].pop();
+    }
+
+
     function getTicketsByNetID(bytes32 netID) public view returns(Ticket[] memory){
         Ticket[] memory userTickets = tickets[netID];
         return userTickets;

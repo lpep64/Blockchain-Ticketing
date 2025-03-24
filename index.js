@@ -59,7 +59,7 @@ app.get("/api/ticketsByNetID", async (req, res) => {
     res.json(tickets);
   } catch (error) {
     console.error("Error fetching tickets:", error);
-    res.status(500).send("Error fetching tickets");
+    // res.status(500).send("Error fetching tickets");
   }
 });
 
@@ -92,9 +92,24 @@ app.post("/api/claimTicket", async (req, res) => {
     res.status(200).send("Ticket claimed successfully.");
   } catch (error) {
     console.error("Error claiming ticket:", error);
-    res.status(500).json({ error: error.message || "Error claiming ticket" });
+    // res.status(500).json({ error: error.message || "Error claiming ticket" });
   }
 });
+
+app.post("/api/unclaimTicket", async (req, res) => {
+  console.log('unclaimAPICalled');
+  const netID = req.query.netID || req.headers.netID;
+  const eventID = req.query.eventID || req.headers.eventID;
+  try{
+    const hashedNetID = Web3.utils.keccak256(netID);
+    const recept = await callWithFailover('unclaimTicket', hashedNetID, eventID);
+    res.status(200).send("Ticket unclaimed successfully");
+  }catch (error) {
+    console.log("Error unclaiming ticket: ", error);
+  }
+})
+
+
 
 // API Route for transfering ticket
 app.post("/api/transfer-ticket", (req, res) => {

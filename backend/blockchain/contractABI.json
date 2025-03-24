@@ -221,5 +221,23 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "netID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "givenEventID",
+        "type": "uint256"
+      }
+    ],
+    "name": "unclaimTicket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]
