@@ -7,6 +7,7 @@ import axios from 'axios' // Import axios for API calls
 // Utility function to format date
 const formatDate = (datetime) => {
     const date = new Date(datetime);
+    if (isNaN(date.getTime())) return "Invalid Date"; // Check for invalid date
     const options = {
         year: 'numeric',
         month: 'long',
@@ -17,6 +18,7 @@ const formatDate = (datetime) => {
     };
     return date.toLocaleString('en-US', options);
 }
+
 
 const router = useRouter()
 
@@ -73,7 +75,7 @@ const filteredEvents = computed(() => {
         return sortedEvents; // Show all if none are selected
     }
     return sortedEvents.filter(event => {
-        return selectedSports.value.some(sport => event.sport.includes(sport));
+        return selectedSports.value.some(sport => event.sport.toLowerCase().includes(sport.toLowerCase()));
     });
 });
 
@@ -195,16 +197,16 @@ const addEvent = async () => {
     const { sport, team, date, location, ticketsOpen } = newEvent.value
     const title = `UConn vs. ${team}`
     const id = events.value.length + 1
-    const newEventData = { 
-        id, 
-        title, 
-        date, 
-        location, 
-        sport, 
-        ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`, 
-        ticketsOpen,
-        totalTickets
-    }
+    const newEventData = {
+        id,
+        title: `UConn vs. ${team}`,
+        date: newEvent.value.date,
+        location: newEvent.value.location,
+        sport: newEvent.value.sport,
+        ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`,
+        ticketsOpen: newEvent.value.ticketsOpen,
+        totalTickets: newEvent.value.totalTickets
+    };
 
     try {
         //await axios.post('/api/events', newEventData) // Replace with your API endpoint
@@ -242,7 +244,7 @@ const addEvent = async () => {
                             <div class="event-details">
                                 <h2>{{ event.sport }}: {{ event.title }}</h2>
                                 <p>{{ formatDate(event.date) }} | {{ event.location }}</p>
-                                <button @click="claimTicket(event.ID)" class="ticket-button">Claim Ticket</button>
+                                <button @click="claimTicket(event.id)" class="ticket-button">Claim Ticket</button>
                                 <p class="tickets-open">Tickets Open: {{ formatDate(event.ticketsOpen) }}</p>
                             </div>
                         </li>

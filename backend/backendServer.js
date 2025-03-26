@@ -31,14 +31,16 @@ app.post('/addevent', async (req, res) => {
 });
 
 // 2️⃣ Get All Events
-app.get('/getevents', async (req, res) => {
-    try {
-        const [events] = await pool.query("SELECT * FROM Events");
-        res.json(events);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+app.get('/api/getEvents', async (req, res) => {
+  try {
+      const events = await db.query('SELECT * FROM events');
+      res.json(events);
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+  }
 });
+
 
 // 3️⃣ Claim a Ticket
 app.post('/claimticket', async (req, res) => {
@@ -46,7 +48,7 @@ app.post('/claimticket', async (req, res) => {
         const { netId, eventId } = req.body;
 
         // Check if there are available tickets
-        const [event] = await pool.query("SELECT totalTickets FROM Events WHERE eventId = ?", [eventId]);
+        const [event] = await pool.query("SELECT totalTickets FROM events WHERE eventId = ?", [eventId]);
         if (event.length === 0 || event[0].totalTickets <= 0) {
             return res.status(400).json({ error: "No tickets available" });
         }
@@ -89,7 +91,7 @@ app.post('/unclaimticket', async (req, res) => {
         await pool.query("DELETE FROM Tickets WHERE ticketId = ?", [ticketId]);
 
         // Increase the ticket count
-        await pool.query("UPDATE Events SET totalTickets = totalTickets + 1 WHERE eventId = ?", [eventId]);
+        await pool.query("UPDATE events SET totalTickets = totalTickets + 1 WHERE eventId = ?", [eventId]);
 
         res.json({ message: "Ticket unclaimed successfully", ticketId });
     } catch (error) {
