@@ -37,8 +37,10 @@ const events = ref([])
 // Fetch events from API
 const fetchEvents = async () => {
     try {
-        const response = await fetch(`/api/getEvents`); // Replace with your API endpoint
-        events.value = await response.json(); // Await the JSON response
+        const response = await fetch(`/api/getEvents`);
+        const data = await response.json();
+        console.log('Fetched Events:', data);  // Log the events to inspect
+        events.value = data;
     } catch (error) {
         console.error('Error fetching events:', error);
     }
@@ -65,14 +67,15 @@ onMounted(() => {
 
 // Computed property to filter and sort events
 const filteredEvents = computed(() => {
-    const sortedEvents = [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen))
+    console.log('Filtered Events:', events.value);  // Log events here to ensure they're being processed
+    const sortedEvents = [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
     if (selectedSports.value.length === 0) {
-        return sortedEvents // Show all if none are selected
+        return sortedEvents; // Show all if none are selected
     }
     return sortedEvents.filter(event => {
-        return selectedSports.value.some(sport => event.sport.includes(sport))
-    })
-})
+        return selectedSports.value.some(sport => event.sport.includes(sport));
+    });
+});
 
 // Toggle sport selection
 const toggleSport = (sport) => {
@@ -235,7 +238,7 @@ const addEvent = async () => {
                 <div>
                     <h2>Upcoming Events</h2>
                     <ul class="events-list">
-                        <li v-for="event in filteredEvents" :key="event.ID" class="event-card">
+                        <li v-for="event in filteredEvents" :key="event.id" class="event-card">
                             <div class="event-details">
                                 <h2>{{ event.sport }}: {{ event.title }}</h2>
                                 <p>{{ formatDate(event.date) }} | {{ event.location }}</p>

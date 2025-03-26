@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise';
 const db = await mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '111q',
+  password: 'root1*Password23',
   database: 'blockchainticketing' //locally supported as mysql is first installed on local device
 });
 
