@@ -93,7 +93,8 @@ const newEvent = ref({
     date: '',
     time: '',
     location: '',
-    ticketsOpen: ''
+    ticketsOpen: '',
+    totalTickets: ''
 })
 
 const resetForm = () => {
@@ -141,6 +142,10 @@ const validateEvent = () => {
     }
     if (!newEvent.value.ticketsOpen) {
         errorMessage.value = "Please select when tickets open"
+        return false
+    }
+    if (!newEvent.value.totalTickets) {
+        errorMessage.value = "Please enter how many tickets are available for this event"
         return false
     }
 
@@ -194,7 +199,8 @@ const addEvent = async () => {
         location, 
         sport, 
         ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`, 
-        ticketsOpen 
+        ticketsOpen,
+        totalTickets
     }
 
     try {
@@ -268,6 +274,8 @@ const addEvent = async () => {
                     </select>
                     <label>Tickets Open</label>
                     <input v-model="newEvent.ticketsOpen" type="datetime-local" />
+                    <label>Total Tickets</label>
+                    <input v-model="newEvent.totalTickets" type="number"/>
                     <div class="button-group">
                         <button @click="addEvent">Add</button>
                         <button @click="closeAddEventPopup">Close</button>
