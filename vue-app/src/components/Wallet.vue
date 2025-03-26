@@ -180,6 +180,9 @@ ul {
     background-color: #1B2E67;
     color: white;
     text-decoration: none;
+    border: none;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
     border-radius: 5px;
     margin-top: 10px;
 }
