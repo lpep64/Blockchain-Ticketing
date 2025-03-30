@@ -39,14 +39,33 @@ const events = ref([])
 // Fetch events from API
 const fetchEvents = async () => {
     try {
-        const response = await fetch(`/api/getEvents`);
-        const data = await response.json();
-        console.log('Fetched Events:', data);  // Log the events to inspect
-        events.value = data;
+        const response = await fetch("http://localhost:3001/api/getEvents");
+
+        console.log("Response Status:", response.status);
+        console.log("Content-Type:", response.headers.get("content-type"));
+
+        // Check if the response is successful (status 200) and is JSON
+        if (!response.ok) {
+            throw new Error(`Server returned status: ${response.status}`);
+        }
+
+        const text = await response.text();
+        console.log("Raw Response:", text);
+
+        // Check if the response is JSON before attempting to parse it
+        try {
+            const jsonData = JSON.parse(text); 
+            o.value = jsonData; // Assuming o is defined
+        } catch (parseError) {
+            console.error("Failed to parse JSON. Response is not valid JSON:", parseError);
+        }
+
     } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
     }
 };
+
+
 
 // Claim a ticket
 const claimTicket = async (eID) => {
@@ -69,15 +88,10 @@ onMounted(() => {
 
 // Computed property to filter and sort events
 const filteredEvents = computed(() => {
-    console.log('Filtered Events:', events.value);  // Log events here to ensure they're being processed
-    const sortedEvents = [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
-    if (selectedSports.value.length === 0) {
-        return sortedEvents; // Show all if none are selected
-    }
-    return sortedEvents.filter(event => {
-        return selectedSports.value.some(sport => event.sport.toLowerCase().includes(sport.toLowerCase()));
-    });
+    console.log('Filtered Events:', events.value);
+    return [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
 });
+
 
 // Toggle sport selection
 const toggleSport = (sport) => {
@@ -242,10 +256,11 @@ const addEvent = async () => {
                     <ul class="events-list">
                         <li v-for="event in filteredEvents" :key="event.id" class="event-card">
                             <div class="event-details">
-                                <h2>{{ event.sport }}: {{ event.title }}</h2>
+                                <h2>{{ event.title }}</h2>
                                 <p>{{ formatDate(event.date) }} | {{ event.location }}</p>
                                 <button @click="claimTicket(event.id)" class="ticket-button">Claim Ticket</button>
                                 <p class="tickets-open">Tickets Open: {{ formatDate(event.ticketsOpen) }}</p>
+                                <p>Total Tickets: {{ event.totalTickets }}</p>
                             </div>
                         </li>
                     </ul>

@@ -16,6 +16,7 @@ const pool = mysql.createPool({
     queueLimit: 0,
 });
 
+
 // 1️⃣ Add an Event
 app.post('/addevent', async (req, res) => {
     try {
@@ -32,14 +33,16 @@ app.post('/addevent', async (req, res) => {
 
 // 2️⃣ Get All Events
 app.get('/api/getEvents', async (req, res) => {
-  try {
-      const events = await db.query('SELECT * FROM events');
-      res.json(events);
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-  }
+    try {
+        const [events] = await pool.query('SELECT * FROM events');  // Use `pool` instead of `database`
+        console.log("Events fetched:", events);
+        res.json(events);
+    } catch (err) {
+        console.error("Database Query Error:", err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
 });
+
 
 
 // 3️⃣ Claim a Ticket

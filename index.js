@@ -29,7 +29,7 @@ app.get("/api/getNetID", (req, res) => {
 
 // API Route for getting events
 // Need to have this query the databse
-app.get("/api/getEvents", (req, res) => {
+app.get("http://localhost:3001/api/getEvents", (req, res) => {
   console.log('getEventsAPICalled');
   try{
     console.log(req.body); //Here just fetch all the events from the DB, filtering is handled on the frontend
@@ -211,3 +211,6 @@ app.get("*", requireAuth, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+const cors = require("cors");
+app.use(cors()); // Allow all origins (for development)
