@@ -28,17 +28,36 @@ const pool = mysql.createPool({
 
 // 1️⃣ Add an Event
 app.post('/addevent', async (req, res) => {
-  try {
     const { eventName, eventDate, totalTickets } = req.body;
-    const [result] = await pool.query(
-      "INSERT INTO Events (eventName, eventDate, totalTickets) VALUES (?, ?, ?)",
-      [eventName, eventDate, totalTickets]
-    );
-    res.json({ message: 'Event added successfully', eventId: result.insertId });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+
+    console.log("Received event data:", req.body);
+
+    // Ensure totalTickets is an integer
+    const totalTicketsInt = parseInt(totalTickets, 10);
+    if (isNaN(totalTicketsInt)) {
+        console.error("Invalid totalTickets value:", totalTickets);
+        return res.status(400).json({ error: 'Invalid totalTickets value' });
+    }
+
+    const query = 'INSERT INTO events (eventName, eventDate, totalTickets) VALUES (?, ?, ?)';
+    
+    try {
+        const [result] = await pool.execute(query, [eventName, eventDate, totalTicketsInt]);
+        console.log("Event inserted successfully, Insert ID:", result.insertId);
+        res.status(200).json({
+            message: "Event added successfully",
+            eventId: result.insertId, 
+            eventName,
+            eventDate,
+            totalTickets: totalTicketsInt
+        });
+    } catch (err) {
+        console.error("Database error:", err);
+        res.status(500).json({ error: 'Error inserting event', details: err.message });
+    }
 });
+
+
 
 // 2️⃣ Get All Events
 app.get('/api/getEvents', async (req, res) => {

@@ -200,35 +200,44 @@ const validateEvent = () => {
 // Add new event
 const addEvent = async () => {
     if (!validateEvent()) {
-        showErrorPopup.value = true
-        return
+        showErrorPopup.value = true;
+        return;
     }
     
-    const { sport, team, date, location, ticketsOpen } = newEvent.value
-    const title = `UConn vs. ${team}`
-    const id = events.value.length + 1
+    const { sport, team, date, location, ticketsOpen, totalTickets } = newEvent.value;
+    const title = `UConn ${sport} vs. ${team}`;
+    
+    // Format eventDate to match 'YYYY-MM-DD HH:MM:SS'
+    const eventDate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+
     const newEventData = {
-        id,
-        title: `UConn vs. ${team}`,
-        date: newEvent.value.date,
-        location: newEvent.value.location,
-        sport: newEvent.value.sport,
-        ticketLink: `/buy-tickets/${team.toLowerCase().replace(/\s+/g, '-')}`,
-        ticketsOpen: newEvent.value.ticketsOpen,
-        totalTickets: newEvent.value.totalTickets
+        eventName: title,
+        eventDate: eventDate, // Matches datetime format
+        totalTickets: parseInt(totalTickets, 10), // Ensure integer type
     };
+    console.log("Sending event data:", newEventData);
 
     try {
-        //await axios.post('/api/events', newEventData) // Replace with your API endpoint
-        //events.value.push(newEventData)
-        resetForm()
-        closeAddEventPopup()
+        const response = await axios.post('http://localhost:3001/addevent', newEventData);
+        console.log("Response received:", response.data);
+
+        if (response.status === 200) {
+            console.log('Event added successfully');
+            events.value.push({
+                title: newEventData.eventName,
+                date: newEventData.eventDate, // Keep formatting consistent
+                totalTickets: newEventData.totalTickets,
+            });
+            resetForm();
+            closeAddEventPopup();
+            window.location.reload(); // Refresh the page after adding an event
+        }
     } catch (error) {
-        console.error('Error adding event:', error)
-        errorMessage.value = "Failed to add event. Please try again."
-        showErrorPopup.value = true
+        console.error('Error adding event:', error);
+        errorMessage.value = "Failed to add event. Please try again.";
+        showErrorPopup.value = true;
     }
-}
+};
 </script>
 
 <template>
@@ -427,6 +436,7 @@ input[type="checkbox"] {
     display: inline-block;
     padding: 10px 20px;
     background-color: #1B2E67;
+    border: none;
     color: white;
     text-decoration: none;
     border-radius: 5px;
