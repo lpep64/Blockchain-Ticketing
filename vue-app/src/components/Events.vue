@@ -39,27 +39,23 @@ const events = ref([])
 // Fetch events from API
 const fetchEvents = async () => {
     try {
-        const response = await fetch("http://localhost:3001/api/getEvents");
+        const response = await axios.get("http://localhost:3001/api/getEvents");
+        const data = response.data;
+        console.log("Fetched events:", data);
 
-        console.log("Response Status:", response.status);
-        console.log("Content-Type:", response.headers.get("content-type"));
-
-        // Check if the response is successful (status 200) and is JSON
-        if (!response.ok) {
-            throw new Error(`Server returned status: ${response.status}`);
-        }
-
-        const text = await response.text();
-        console.log("Raw Response:", text);
-
-        // Check if the response is JSON before attempting to parse it
-        try {
-            const jsonData = JSON.parse(text); 
-            o.value = jsonData; // Assuming o is defined
-        } catch (parseError) {
-            console.error("Failed to parse JSON. Response is not valid JSON:", parseError);
-        }
-
+        // Same mapping logic
+        events.value = data.map(item => ({
+            id: item.eventId,
+            title: item.eventName,
+            date: item.eventDate,
+            location: "Location", // Customize this if needed
+            sport: item.eventName.includes("Basketball") ? "Basketball" : 
+                   item.eventName.includes("Football") ? "Football" :
+                   item.eventName.includes("Hockey") ? "Hockey" :
+                   item.eventName.includes("Soccer") ? "Soccer" : "Other",
+            ticketsOpen: new Date().toISOString(), // Use actual data if available
+            totalTickets: item.totalTickets
+        }));
     } catch (error) {
         console.error("Error fetching events:", error);
     }
