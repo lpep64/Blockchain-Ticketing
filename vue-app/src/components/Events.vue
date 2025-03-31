@@ -66,16 +66,45 @@ const fetchEvents = async () => {
 // Claim a ticket
 const claimTicket = async (eID) => {
     try {
-        console.log(eID)
-        const netID = (await axios.get("/api/getNetID")).data.netID
-        const response = await axios.post("/api/claimTicket", { netID: netID, eventID: eID });
-        console.log(response);
-        alert(response.data);
+        console.log("Claiming ticket for event:", eID);
+
+        // Fetch netId from API (if it exists) or use default value
+        let netID = "netidtest"; // Default value in case the API isn't set up
+        try {
+            const netIdResponse = await axios.get("http://localhost:3001/getNetID");
+            netID = netIdResponse.data.netId || netID; // Ensure a fallback if the response is empty
+        } catch (error) {
+            console.warn("Could not fetch netId, using default:", error);
+        }
+
+        // Call the claim ticket API with correct variable names
+        const response = await axios.post("http://localhost:3001/claimticket", { netId: netID, eventId: eID });
+
+        console.log("Claim Ticket Response:", response.data);
+        alert("🎟️ Ticket claimed successfully!");
+        window.location.reload(); // Refresh the page
+
     } catch (error) {
-        console.error('Error claiming ticket:');
-        alert('Error claiming ticket. Please try again later.');
+        console.error("Error claiming ticket:", error);
+
+        if (error.response) {
+            const errorMessage = error.response.data.error || "An unexpected error occurred.";
+
+            // 🎯 Clearer error messages based on backend responses
+            if (errorMessage.includes("No tickets available")) {
+                alert("❌ Sorry, there are no more tickets left for this event.");
+            } else if (errorMessage.includes("already claimed a ticket")) {
+                alert("⚠️ You have already claimed a ticket for this event.");
+            } else {
+                alert(`⚠️ Error: ${errorMessage}`);
+            }
+        } else {
+            alert("❌ Network error. Please check your internet connection and try again.");
+        }
     }
 };
+
+
 
 // Fetch events on component mount
 onMounted(() => {
