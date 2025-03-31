@@ -76,8 +76,6 @@ app.get('/api/getEvents', async (req, res) => {
 app.post('/claimticket', async (req, res) => {
   try {
       const { eventId } = req.body;
-      const netId = req.body.netId || "netidtest"; // Default netid if not provided
-
       // Step 1: Check ticket availability
       const [event] = await pool.query("SELECT totalTickets FROM events WHERE eventId = ?", [eventId]);
 
@@ -87,26 +85,11 @@ app.post('/claimticket', async (req, res) => {
       if (event[0].totalTickets <= 0) {
           return res.status(400).json({ error: "No tickets available" });
       }
-      const [existingTicket] = await pool.query("SELECT * FROM tickets WHERE eventId = ? AND ownerNetId = ?", [eventId, netId]);
-      
-      if (existingTicket.length > 0) {
-          return res.status(400).json({ error: "already claimed a ticket" });
-      }
 
-      // Step 2: Create ticketId
-      const ticketId = `${netId}${eventId}`;
-      const qrCode = ''; // Placeholder for QR code logic
-
-      // Step 3: Insert ticket into tickets table
-      await pool.query(
-          "INSERT INTO tickets (ticketId, eventId, ownerNetId, qrCode, isRedeemed, createdAt) VALUES (?, ?, ?, ?, ?, NOW())",
-          [ticketId, eventId, netId, qrCode, 0]
-      );
-
-      // Step 4: Update events table (decrement totalTickets)
+      // Step 2: Update events table (decrement totalTickets)
       await pool.query("UPDATE events SET totalTickets = totalTickets - 1 WHERE eventId = ?", [eventId]);
 
-      res.status(200).json({ message: "Ticket claimed successfully", ticketId });
+      res.status(200).json({ message: "Ticket claimed successfully"});
 
   } catch (error) {
       console.error("Error claiming ticket:", error);
@@ -115,28 +98,25 @@ app.post('/claimticket', async (req, res) => {
 });
 
 
-// 4️⃣ Unclaim a Ticket
+//4️⃣ Unclaim a Ticket
 app.post('/unclaimticket', async (req, res) => {
   try {
-    const { netId, eventId } = req.body;
-    const [ticket] = await pool.query(
-      "SELECT ticketId FROM Tickets WHERE ownerNetId = ? AND eventId = ? LIMIT 1",
-      [netId, eventId]
-    );
-
-    if (ticket.length === 0) {
-      return res.status(400).json({ error: "No ticket found for this user and event" });
+    const { eventId } = req.body;
+    
+    // Check if event exists
+    const [event] = await pool.query("SELECT eventId FROM events WHERE eventId = ?", [eventId]);
+    
+    if (event.length === 0) {
+      return res.status(404).json({ error: "Event not found" });
     }
 
-    const ticketId = ticket[0].ticketId;
-
-    await pool.query("DELETE FROM Tickets WHERE ticketId = ?", [ticketId]);
-
+    // Update events table (increment totalTickets)
     await pool.query("UPDATE events SET totalTickets = totalTickets + 1 WHERE eventId = ?", [eventId]);
 
-    res.json({ message: "Ticket unclaimed successfully", ticketId });
+    res.status(200).json({ message: "Ticket unclaimed successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error unclaiming ticket:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
 
