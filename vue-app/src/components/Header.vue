@@ -39,12 +39,12 @@ const transferWallet = () => {
   router.push('/wallet');
 };
 
-const transferSeatGeek = () => {
-  window.location.href = "https://seatgeek.com/search?f=1&search=UConn&ui_origin=home_search";
+const transferVerify = () => {
+  router.push('/verify');
 };
 
-const popupPromoCode = () => {
-  showPromoPopup.value = true;
+const transferSeatGeek = () => {
+  window.location.href = "https://seatgeek.com/search?f=1&search=UConn&ui_origin=home_search";
 };
 
 const closePromoPopup = () => {
@@ -69,9 +69,9 @@ const applyPromoCode = () => {
       <span class="separator">|</span>
       <button @click="transferWallet" :class="{'link-button': true, 'active': route.path === '/wallet'}">Wallet</button>
       <span class="separator">|</span>
-      <button @click="transferSeatGeek" class="link-button">SeatGeek</button>
+      <button @click="transferVerify" :class="{'link-button': true, 'active': route.path === '/verify'}">Verify</button>
       <span class="separator">|</span>
-      <button @click="popupPromoCode" class="link-button">Promo Code</button>
+      <button @click="transferSeatGeek" class="link-button">SeatGeek</button>
     </div>
     <div class="right-section">
       <button v-if="!netID" @click="redirectToAuth" class="login-button">Login</button>
