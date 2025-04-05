@@ -48,12 +48,12 @@ const fetchEvents = async () => {
             id: item.eventId,
             title: item.eventName,
             date: item.eventDate,
-            location: "Location", // Customize this if needed
+            location: item.eventLocation, // Customize this if needed
             sport: item.eventName.includes("Basketball") ? "Basketball" : 
                    item.eventName.includes("Football") ? "Football" :
                    item.eventName.includes("Hockey") ? "Hockey" :
                    item.eventName.includes("Soccer") ? "Soccer" : "Other",
-            ticketsOpen: new Date().toISOString(), // Use actual data if available
+            ticketsOpen: item.ticketsOpen, // Use actual data if available
             totalTickets: item.totalTickets
         }));
     } catch (error) {
@@ -232,6 +232,8 @@ const addEvent = async () => {
         eventName: title,
         eventDate: eventDate, // Matches datetime format
         totalTickets: parseInt(totalTickets, 10), // Ensure integer type
+        eventLocation: location,
+        ticketsOpen: ticketsOpen
     };
     console.log("Sending event data:", newEventData);
 
@@ -245,6 +247,8 @@ const addEvent = async () => {
                 title: newEventData.eventName,
                 date: newEventData.eventDate, // Keep formatting consistent
                 totalTickets: newEventData.totalTickets,
+                location: newEventData.eventLocation,
+                ticketsOpen: newEventData.ticketsOpen
             });
             resetForm();
             closeAddEventPopup();

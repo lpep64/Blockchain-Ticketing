@@ -28,7 +28,7 @@ const pool = mysql.createPool({
 
 // 1️⃣ Add an Event
 app.post('/addevent', async (req, res) => {
-    const { eventName, eventDate, totalTickets } = req.body;
+    const { eventName, eventDate, totalTickets, eventLocation, ticketsOpen } = req.body;
 
     console.log("Received event data:", req.body);
 
@@ -39,17 +39,19 @@ app.post('/addevent', async (req, res) => {
         return res.status(400).json({ error: 'Invalid totalTickets value' });
     }
 
-    const query = 'INSERT INTO events (eventName, eventDate, totalTickets) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO events (eventName, eventDate, totalTickets, eventLocation, ticketsOpen) VALUES (?, ?, ?, ?, ?)';
     
     try {
-        const [result] = await pool.execute(query, [eventName, eventDate, totalTicketsInt]);
+        const [result] = await pool.execute(query, [eventName, eventDate, totalTicketsInt, eventLocation, ticketsOpen]);
         console.log("Event inserted successfully, Insert ID:", result.insertId);
         res.status(200).json({
             message: "Event added successfully",
             eventId: result.insertId, 
             eventName,
             eventDate,
-            totalTickets: totalTicketsInt
+            totalTickets: totalTicketsInt,
+            eventLocation,
+            ticketsOpen
         });
     } catch (err) {
         console.error("Database error:", err);
