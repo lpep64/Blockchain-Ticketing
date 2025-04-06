@@ -63,6 +63,7 @@ app.get("/api/ticketsByNetID", async (req, res) => {
   }
 });
 
+// Helps covernt seatinfo to blockchain formating
 function toBytes16(str) {
   const buf = Buffer.alloc(16); // Create a 16-byte buffer filled with 0x00
   const strBytes = Buffer.from(str, 'utf8'); // Convert string to bytes
@@ -70,6 +71,7 @@ function toBytes16(str) {
   return buf;
 }
 
+// Claims a ticket
 app.post("/api/claimTicket", async (req, res) => {
   console.log('generateAIPCalled');
   const netID = req.body.netID;
