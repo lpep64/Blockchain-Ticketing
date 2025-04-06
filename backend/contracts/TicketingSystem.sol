@@ -13,6 +13,7 @@ contract TicketingSystem {
         uint256 eventId;
         bytes32 owner;  //hashed netID
         bytes16 seatInfo;
+        bool isValidated;
     }
 
     mapping(bytes32 => Ticket[]) public tickets; //maps a hashed netID to their owned tickets
@@ -23,7 +24,7 @@ contract TicketingSystem {
 
     function generateTicket(bytes32 netID, uint256 givenEventID, bytes16 givenSeatInfo) public{
         ticketCount += 1;
-        Ticket memory newTicket = Ticket({id: ticketCount, eventId: givenEventID, owner: netID, seatInfo: givenSeatInfo});
+        Ticket memory newTicket = Ticket({id: ticketCount, eventId: givenEventID, owner: netID, seatInfo: givenSeatInfo, isValidated: false});
         ticketIDs[ticketCount] = newTicket;
         tickets[netID].push(newTicket);
         emit newOwner(newTicket.id, netID, givenEventID, givenSeatInfo);
@@ -42,6 +43,26 @@ contract TicketingSystem {
     function getTicketsByNetID(bytes32 netID) public view returns(Ticket[] memory){
         Ticket[] memory userTickets = tickets[netID];
         return userTickets;
+    }
+
+    function validateTicket(bytes32 netID, uint256 eventID, uint256 ticketID) public returns(bool) {
+        Ticket[] memory userTickets = tickets[netID];
+        bool hasTicket = false;
+        uint index;
+        for(uint i = 0; i < userTickets.length; i++){
+            if (userTickets[i].eventId == eventID){
+                hasTicket = true;
+                index = i;
+            }
+        }
+        if(!hasTicket){
+            return false;
+        }
+        if(userTickets[index].id == ticketID && userTickets[index].isValidated == false){
+            tickets[netID][index].isValidated = true;
+            return true;
+        }
+        return false;
     }
 
 // logic for transfering ticket
