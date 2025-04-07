@@ -9,9 +9,9 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json()); // Enable JSON parsing
 
-// Configure CORS to allow requests from http://localhost:8080
+// Configure CORS to allow requests from http://localhost:8082
 const corsOptions = {
-  origin: 'http://localhost:8080',  // Only allow requests from the frontend
+  origin: 'http://localhost:8082',  // Only allow requests from the frontend
 };
 app.use(cors(corsOptions));  // Enable CORS middleware
 
