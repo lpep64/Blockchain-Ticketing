@@ -121,7 +121,7 @@ app.post('/claimticket', async (req, res) => {
 });
 
 
-//View Wallet
+// View Wallet
 app.get('/getWallet', async (req, res) => {
   try{
     const netID = req.query.netID || req.headers.netID;
@@ -175,6 +175,74 @@ app.post('/unclaimticket', async (req, res) => {
   } catch (error) {
     console.error("Error unclaiming ticket:", error);
     res.status(500).json({ error: "Internal server error", details: error.message });
+  }
+});
+
+
+// Ticket verified +1 point
+app.post('/verifyticket', async (req, res) => {
+  const { netID, eventID } = req.body;
+  try {
+    const hashedNetID = Web3.utils.keccak256(netID);
+    await callWithFailover('validateTicket', hashedNetID, eventID);
+
+    // Award points
+    await pool.query(
+      'UPDATE users SET pointTotal = pointTotal + 1 WHERE netID = ?',
+      [netID]
+    );
+
+    res.status(200).json({ message: 'Ticket verified successfully and points added!' });
+  } catch (error) {
+    console.error('Error verifying ticket:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+});
+
+
+// Ticket not verified and event passed -1 point
+app.post('/penalizeunverified', async (req, res) => {
+  try {
+    // Get all users
+    const [users] = await pool.query('SELECT netID FROM users');
+
+    // Find all events that already happened
+    const [events] = await pool.query('SELECT eventId, eventDate FROM events WHERE eventDate < NOW()');
+
+    for (const event of events) {
+      const eventId = event.eventId;
+
+      // Get all tickets for this event
+      const allTickets = await callWithFailover('getAllTicketsByEventID', eventId);
+
+      for (const ticket of allTickets) {
+        if (!ticket.isValidated) {
+          const ticketOwnerHashedNetID = ticket.netID; // This is the hashedNetID
+
+          // Find matching real netID
+          for (const user of users) {
+            const userNetID = user.netID;
+            const hashedUserNetID = Web3.utils.keccak256(userNetID);
+
+            if (hashedUserNetID === ticketOwnerHashedNetID) {
+              const pointsToDeduct = 1;
+              console.log(`Penalizing ${userNetID} for unverified ticket at event ${eventId}`);
+
+              await pool.query(
+                'UPDATE users SET pointTotal = GREATEST(pointTotal - ?, 0) WHERE netID = ?',
+                [pointsToDeduct, userNetID]
+              );
+              break; // Found the matching user, move to next ticket
+            }
+          }
+        }
+      }
+    }
+
+    res.status(200).json({ message: 'Penalized unverified tickets successfully' });
+  } catch (error) {
+    console.error('Error penalizing unverified tickets:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 });
 

@@ -12,17 +12,46 @@ const fileInput = ref(null) // Ref for the file input
 // Popup visibility state
 const showPopup = ref(false)
 
-// Function to handle form submission
-const handleSubmit = (event) => {
-  event.preventDefault() // Prevent default form submission behavior
+// Function to handle form submission (and update ticket validation for point system accordingly)
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-  // Display the popup
-  showPopup.value = true
+  try {
+    const netIDResponse = await fetch('http://localhost:8082/api/getNetID');
+    const netIDData = await netIDResponse.json();
+    const netID = netIDData.netID;
 
-  // Clear the text input and file input
-  textInput.value = ''
-  fileInput.value = null
-}
+    // Assume textInput.value has ticket QR info, like "eventID$$$hashedNetID"
+    const parts = textInput.value.split('$$$');
+    if (parts.length !== 2) {
+      throw new Error("Invalid ticket input format");
+    }
+
+    const eventID = parseInt(parts[0]);  // eventID is before the $$$
+
+    console.log("Submitting Verification: ", { netID, eventID });
+
+    const response = await fetch('http://localhost:3001/verifyticket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ netID, eventID }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to verify ticket');
+    }
+
+    const result = await response.json();
+    console.log(result.message);
+
+    showPopup.value = true;
+    textInput.value = '';
+    fileInput.value = null;
+  } catch (error) {
+    console.error('Error verifying ticket:', error);
+    alert(`Verification Failed: ${error.message}`);
+  }
+};
 
 // Function to close the popup
 const closePopup = () => {

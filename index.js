@@ -9,12 +9,12 @@ import callWithFailover from './backend/blockchain/nodeInterface.js'
 import cors from 'cors'
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8082;
 app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions ={
-    origin:'http://localhost:8080', 
+    origin:'http://localhost:8082', 
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
