@@ -40,22 +40,24 @@ const fetchTickets = async () => {
 
 // Unclaim a ticket
 const unclaimTicket = async (eID) => {
-  try {
-    console.log("Unclaiming ticket for event:", eID);
-    // Call the unclaim ticket API
-    const response = await axios.post("http://localhost:3001/unclaimticket", { eventId: eID });
-    console.log("Unclaim Ticket Response:", response.data);
-    alert("🎟️ Ticket unclaimed successfully!");
-    window.location.reload(); // Refresh the page
-  } catch (error) {
-    console.error("Error unclaiming ticket:", error);
-    if (error.response) {
-      const errorMessage = error.response.data.error || "An unexpected error occurred.";
-      alert(`⚠️ Error: ${errorMessage}`);
-    } else {
-      alert("❌ Network error. Please check your internet connection and try again.");
+    try {
+        console.log("Unclaiming ticket for event:", eID);
+
+        const response = await axios.post("http://localhost:3001/unclaimticket", { eventId: eID });
+
+        console.log("Unclaim Ticket Response:", response.data);
+        alert("🎟️ Ticket unclaimed successfully!");
+        window.location.reload();
+    } catch (error) {
+        console.error("Error unclaiming ticket:", error);
+
+        if (error.response) {
+            const errorMessage = error.response.data.error || "An unexpected error occurred.";
+            alert(`⚠️ Error: ${errorMessage}`);
+        } else {
+            alert("❌ Network error. Please check your internet connection and try again.");
+        }
     }
-  }
 };
 
 

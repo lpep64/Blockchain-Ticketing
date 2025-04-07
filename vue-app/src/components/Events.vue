@@ -94,7 +94,6 @@ const claimTicket = async (eID) => {
 };
 
 
-
 // Fetch events on component mount
 onMounted(() => {
     fetchEvents()
@@ -102,8 +101,11 @@ onMounted(() => {
 
 // Computed property to filter and sort events
 const filteredEvents = computed(() => {
-    console.log('Filtered Events:', events.value);
-    return [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
+    const filtered = selectedSports.value.length === 0
+        ? events.value
+        : events.value.filter(event => selectedSports.value.includes(event.sport));
+
+    return [...filtered].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
 });
 
 
@@ -226,7 +228,10 @@ const addEvent = async () => {
     const title = `UConn ${sport} vs. ${team}`;
     
     // Format eventDate to match 'YYYY-MM-DD HH:MM:SS'
-    const eventDate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    const pad = n => n.toString().padStart(2, '0');
+    const d = new Date(newEvent.value.date);
+    const eventDate = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+
 
     const newEventData = {
         eventName: title,

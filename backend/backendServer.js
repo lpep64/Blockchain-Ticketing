@@ -26,6 +26,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+
 // 1️⃣ Add an Event
 app.post('/addevent', async (req, res) => {
     const { eventName, eventDate, totalTickets, eventLocation, ticketsOpen } = req.body;
@@ -58,7 +59,6 @@ app.post('/addevent', async (req, res) => {
         res.status(500).json({ error: 'Error inserting event', details: err.message });
     }
 });
-
 
 
 // 2️⃣ Get All Events
@@ -102,25 +102,16 @@ app.post('/claimticket', async (req, res) => {
 
 //4️⃣ Unclaim a Ticket
 app.post('/unclaimticket', async (req, res) => {
+  const { eventId } = req.body;
   try {
-    const { eventId } = req.body;
-    
-    // Check if event exists
-    const [event] = await pool.query("SELECT eventId FROM events WHERE eventId = ?", [eventId]);
-    
-    if (event.length === 0) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-
-    // Update events table (increment totalTickets)
-    await pool.query("UPDATE events SET totalTickets = totalTickets + 1 WHERE eventId = ?", [eventId]);
-
-    res.status(200).json({ message: "Ticket unclaimed successfully" });
-  } catch (error) {
-    console.error("Error unclaiming ticket:", error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+      await pool.query("UPDATE events SET totalTickets = totalTickets + 1 WHERE eventId = ?", [eventId])
+      res.status(200).send({ message: 'Ticket unclaimed' });
+  } catch (err) {
+      console.error("Error unclaiming ticket:", error);
+      res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 // Start the server
 app.listen(port, () => {
