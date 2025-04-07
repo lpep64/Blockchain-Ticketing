@@ -8,11 +8,17 @@ import Web3 from 'web3'
 import callWithFailover from './backend/blockchain/nodeInterface.js'
 import cors from 'cors'
 
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cookieParser());
+
+const corsOptions ={
+    origin:'http://localhost:8080', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 //Get netID from the cookie
 app.get("/api/getNetID", (req, res) => {
@@ -53,7 +59,6 @@ const SERVICE_URL = process.env.SERVICE_URL || `http://localhost:${PORT}/login/c
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "vue-app/dist")));
 
 function requireAuth(req, res, next) {
@@ -88,22 +93,22 @@ app.get("/login/callback", async (req, res) => {
     } 
 
     // Database portion
-    /*
+
     const netID = userMatch[1];
     console.log(userMatch);
-    
-    const [items] = await db.execute("SELECT netID FROM users WHERE netID = ?", [netID]);
-
+   
+    const [items] = await db.execute("SELECT netId FROM users WHERE netId = ?", [netID]);
+ 
     if (items.length > 0) {
       console.log("ALREADY INSERTED");
       res.cookie("netID", netID);
       res.redirect("/");
     } else {
-      await db.execute("INSERT INTO users (netID) VALUES (?)", [netID]);
+      await db.execute("INSERT INTO users (netId) VALUES (?)", [netID]);
       console.log("NEW INSERTED");
       res.cookie("netID", netID);
     }
-    */
+
   
   }catch (error) {
     console.error("Error validating ticket:", error);

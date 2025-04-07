@@ -56,7 +56,6 @@ const unclaimTicket = async (eID) => {
     } else {
       alert("❌ Network error. Please check your internet connection and try again.");
     }
-  }
 };
 
 

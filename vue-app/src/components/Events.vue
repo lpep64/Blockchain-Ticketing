@@ -48,12 +48,12 @@ const fetchEvents = async () => {
             id: item.eventId,
             title: item.eventName,
             date: item.eventDate,
-            location: "Location", // Customize this if needed
+            location: item.eventLocation, // Customize this if needed
             sport: item.eventName.includes("Basketball") ? "Basketball" : 
                    item.eventName.includes("Football") ? "Football" :
                    item.eventName.includes("Hockey") ? "Hockey" :
                    item.eventName.includes("Soccer") ? "Soccer" : "Other",
-            ticketsOpen: new Date().toISOString(), // Use actual data if available
+            ticketsOpen: item.ticketsOpen, // Use actual data if available
             totalTickets: item.totalTickets
         }));
     } catch (error) {
@@ -95,7 +95,6 @@ const claimTicket = async (eID) => {
 };
 
 
-
 // Fetch events on component mount
 onMounted(() => {
     fetchEvents()
@@ -103,8 +102,11 @@ onMounted(() => {
 
 // Computed property to filter and sort events
 const filteredEvents = computed(() => {
-    console.log('Filtered Events:', events.value);
-    return [...events.value].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
+    const filtered = selectedSports.value.length === 0
+        ? events.value
+        : events.value.filter(event => selectedSports.value.includes(event.sport));
+
+    return [...filtered].sort((a, b) => new Date(a.ticketsOpen) - new Date(b.ticketsOpen));
 });
 
 
@@ -227,12 +229,17 @@ const addEvent = async () => {
     const title = `UConn ${sport} vs. ${team}`;
     
     // Format eventDate to match 'YYYY-MM-DD HH:MM:SS'
-    const eventDate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    const pad = n => n.toString().padStart(2, '0');
+    const d = new Date(newEvent.value.date);
+    const eventDate = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+
 
     const newEventData = {
         eventName: title,
         eventDate: eventDate, // Matches datetime format
         totalTickets: parseInt(totalTickets, 10), // Ensure integer type
+        eventLocation: location,
+        ticketsOpen: ticketsOpen
     };
     console.log("Sending event data:", newEventData);
 
@@ -246,6 +253,8 @@ const addEvent = async () => {
                 title: newEventData.eventName,
                 date: newEventData.eventDate, // Keep formatting consistent
                 totalTickets: newEventData.totalTickets,
+                location: newEventData.eventLocation,
+                ticketsOpen: newEventData.ticketsOpen
             });
             resetForm();
             closeAddEventPopup();
