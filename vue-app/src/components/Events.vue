@@ -69,7 +69,8 @@ const claimTicket = async (eID) => {
         console.log("Claiming ticket for event:", eID);
 
         // Call the claim ticket API with correct variable names
-        const response = await axios.post("http://localhost:3001/claimticket", { eventId: eID });
+        const netID = (await axios.get("/api/getNetID")).data.netID;
+        const response = await axios.post("http://localhost:3001/claimticket", { eventID: eID, netID: netID});
 
         console.log("Claim Ticket Response:", response.data);
         alert("🎟️ Ticket claimed successfully!");

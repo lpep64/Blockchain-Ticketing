@@ -29,7 +29,7 @@ const fetchTickets = async () => {
     const netIDResponse = await axios.get('/api/getNetID');
     const netID = netIDResponse.data.netID;
 
-    const response = await axios.get(`/api/ticketsByNetID?netID=${netID}`);
+    const response = await axios.get(`http://localhost:3001/getWallet?netID=${netID}`);
     tickets.value = await response.data;
     console.log("Fetched tickets:", response.data);
   } catch (error) {
@@ -40,25 +40,23 @@ const fetchTickets = async () => {
 
 // Unclaim a ticket
 const unclaimTicket = async (eID) => {
-    try {
-        console.log("Unclaiming ticket for event:", eID);
-
-        const response = await axios.post("http://localhost:3001/unclaimticket", { eventId: eID });
-
-        console.log("Unclaim Ticket Response:", response.data);
-        alert("🎟️ Ticket unclaimed successfully!");
-        window.location.reload();
-    } catch (error) {
-        console.error("Error unclaiming ticket:", error);
-
-        if (error.response) {
-            const errorMessage = error.response.data.error || "An unexpected error occurred.";
-            alert(`⚠️ Error: ${errorMessage}`);
-        } else {
-            alert("❌ Network error. Please check your internet connection and try again.");
-        }
+  try {
+    console.log("Unclaiming ticket for event:", eID);
+    // Call the unclaim ticket API
+    const netID = (await axios.get("/api/getNetID")).data.netID;
+    const response = await axios.post("http://localhost:3001/unclaimticket", { eventID: eID, netID: netID});
+    console.log("Unclaim Ticket Response:", response.data);
+    alert("🎟️ Ticket unclaimed successfully!");
+    window.location.reload(); // Refresh the page
+  } catch (error) {
+    console.error("Error unclaiming ticket:", error);
+    if (error.response) {
+      const errorMessage = error.response.data.error || "An unexpected error occurred.";
+      alert(`⚠️ Error: ${errorMessage}`);
+    } else {
+      alert("❌ Network error. Please check your internet connection and try again.");
     }
-};
+}};
 
 
 // Fetch tickets on component mount
@@ -80,8 +78,11 @@ onMounted(() => {
               <div class="ticket-details">
                 <h2>{{ ticket.sport }}: {{ ticket.title }}</h2>
                 <p>{{ formatDate(ticket.date) }} | {{ ticket.location }}</p>
-                <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
+                <a :href="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
+                  :download="`ticket-${ticket.id || 'qr'}.png`">
+                  <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
                       alt="Ticket QR Code" class="qr-code" />
+                </a>
                 <button @click="unclaimTicket(ticket.eventID)" class="unclaim-button">Unclaim Ticket</button>
               </div>
             </li>
