@@ -103,6 +103,11 @@
             "internalType": "bytes16",
             "name": "seatInfo",
             "type": "bytes16"
+          },
+          {
+            "internalType": "bool",
+            "name": "isValidated",
+            "type": "bool"
           }
         ],
         "internalType": "struct TicketingSystem.Ticket[]",
@@ -155,6 +160,11 @@
         "internalType": "bytes16",
         "name": "seatInfo",
         "type": "bytes16"
+      },
+      {
+        "internalType": "bool",
+        "name": "isValidated",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -194,6 +204,11 @@
         "internalType": "bytes16",
         "name": "seatInfo",
         "type": "bytes16"
+      },
+      {
+        "internalType": "bool",
+        "name": "isValidated",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -237,6 +252,35 @@
     ],
     "name": "unclaimTicket",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "netID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eventID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "ticketID",
+        "type": "uint256"
+      }
+    ],
+    "name": "validateTicket",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   }
