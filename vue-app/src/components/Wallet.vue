@@ -58,6 +58,31 @@ const unclaimTicket = async (eID) => {
     }
 }};
 
+const downloadQRCode = async (ticket) => {
+  try {
+    console.log(ticket);
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`;
+    const filename = `ticket-${ticket.title || `qr`}.png`;
+
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    const blobUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(blobUrl);
+  } catch (err) {
+    console.error("Failed to download QR code:", err);
+  }
+};
+
+
 
 // Fetch tickets on component mount
 onMounted(() => {
@@ -76,14 +101,15 @@ onMounted(() => {
           <ul class="tickets-list">
             <li v-for="ticket in tickets" :key="ticket.id" class="ticket-card">
               <div class="ticket-details">
-                <h2>{{ ticket.sport }}: {{ ticket.title }}</h2>
-                <p>{{ formatDate(ticket.date) }} | {{ ticket.location }}</p>
+                <h2>{{ ticket.title }}</h2>
+                <p>{{ formatDate(ticket.date) }} {{ ticket.location }}</p>
                 <a :href="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
                   :download="`ticket-${ticket.id || 'qr'}.png`">
                   <img :src="`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.QRCode)}`" 
                       alt="Ticket QR Code" class="qr-code" />
                 </a>
-                <button @click="unclaimTicket(ticket.eventID)" class="unclaim-button">Unclaim Ticket</button>
+                <p> <button @click="downloadQRCode(ticket)" class="download-button">Download QR Code</button> </p>
+                <p> <button @click="unclaimTicket(ticket.eventID)" class="unclaim-button">Unclaim Ticket</button> </p>
               </div>
             </li>
           </ul>
@@ -194,6 +220,23 @@ ul {
     font-size: 1rem;
     border-radius: 5px;
     margin-top: 10px;
+}
+
+.download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #1B2E67;
+  color: white;
+  text-decoration: none;
+  border: none;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.download-button:hover {
+  background-color: #E4002B;
 }
 
 .unclaim-button:hover {

@@ -55,9 +55,7 @@ contract TicketingSystem {
                 index = i;
             }
         }
-        if(!hasTicket){
-            return false;
-        }
+        require(hasTicket, "Student does not have a ticket for this event");
         if(userTickets[index].id == ticketID && userTickets[index].isValidated == false){
             tickets[netID][index].isValidated = true;
             return true;

@@ -2,43 +2,164 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from './Header.vue'
+import axios from 'axios' // Import axios for API calls
+import jsQR from 'jsqr'
 
 const router = useRouter()
 
 // Ref for form data
 const textInput = ref('') // Ref for the text input
-const fileInput = ref(null) // Ref for the file input
+const fileInput = ref(null);
+const uploadedFileName = ref('');
+
+const handleFileUpload = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    fileInput.value = file;
+    uploadedFileName.value = file.name;
+  } else {
+    fileInput.value = null;
+    uploadedFileName.value = '';
+  }
+};
+
+const removeFile = () => {
+  fileInput.value = null;
+  uploadedFileName.value = '';
+};
+
 
 // Popup visibility state
 const showPopup = ref(false)
+
+const events = ref([])
+
+const selectedEvent = ref(null)
+
+const fetchEvents = async () => {
+    try {
+        const response = await axios.get("http://localhost:3001/api/getEvents");
+        const data = response.data;
+        console.log("Fetched events:", data);
+
+        // Same mapping logic
+        events.value = data.map(item => ({
+            id: item.eventId,
+            title: item.eventName,
+            date: item.eventDate,
+            location: item.eventLocation, // Customize this if needed
+            sport: item.eventName.includes("Basketball") ? "Basketball" : 
+                   item.eventName.includes("Football") ? "Football" :
+                   item.eventName.includes("Hockey") ? "Hockey" :
+                   item.eventName.includes("Soccer") ? "Soccer" : "Other",
+            ticketsOpen: item.ticketsOpen, // Use actual data if available
+            totalTickets: item.totalTickets
+        }));
+    } catch (error) {
+        console.error("Error fetching events:", error);
+    }
+};
+
+const decodeQRCode = () => {
+  return new Promise((resolve, reject) => {
+    if (!fileInput.value) {
+      reject("Please upload a file first.");
+      return;
+    }
+
+    const file = fileInput.value;
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        if (!img.naturalWidth || !img.naturalHeight) {
+          reject("Image is not loaded properly.");
+          return;
+        }
+
+        // Create a canvas to process the image
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size to the image size
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+
+        // Draw the image onto the canvas
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Get image data from the canvas
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        // Decode the QR code
+        const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+        if (code) {
+          resolve(code.data);  // Return the decoded QR code data
+        } else {
+          reject("No QR code found.");
+        }
+      };
+
+      img.onerror = (error) => {
+        reject("Image loading error: " + error);
+      };
+
+      img.src = event.target.result; // Set the image source to the file data URL
+    };
+
+    reader.onerror = (error) => {
+      reject("FileReader error: " + error);
+    };
+
+    reader.readAsDataURL(file); // Read the file as a data URL
+  });
+};
+
+
 
 // Function to handle form submission (and update ticket validation for point system accordingly)
 const handleSubmit = async (event) => {
   event.preventDefault();
 
   try {
-    const netIDResponse = await fetch('http://localhost:8082/api/getNetID');
-    const netIDData = await netIDResponse.json();
-    const netID = netIDData.netID;
+    console.log(selectedEvent.value);
+    console.log(textInput.value);
+    console.log(fileInput.value.type);
 
-    // Assume textInput.value has ticket QR info, like "eventID$$$hashedNetID"
-    const parts = textInput.value.split('$$$');
-    if (parts.length !== 2) {
-      throw new Error("Invalid ticket input format");
+    if(!selectedEvent.value || !textInput.value || !fileInput.value){
+      throw new Error("All fields in form are required");
     }
 
-    const eventID = parseInt(parts[0]);  // eventID is before the $$$
+    if(fileInput.value.type != 'image/png') {
+      throw new Error(`the uploaded file needs to be a png image, received a ${fileInput.value.type} file type.`);
+    }
 
-    console.log("Submitting Verification: ", { netID, eventID });
+    const decodedQRCode = await decodeQRCode();
+    if(!decodeQRCode){
+      throw new Error('failed to decode QR code')
+    }
+
+    textInput.value = textInput.value.toLowerCase();
+
+    const eventID = selectedEvent.value.id;
+    const netID = textInput.value;
+    const QRCode = decodedQRCode;
+
+    console.log("Submitting Verification: ", { netID, eventID, QRCode });
 
     const response = await fetch('http://localhost:3001/verifyticket', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ netID, eventID }),
+      body: JSON.stringify({ netID, eventID, QRCode }),
     });
 
+    console.log(response);
+
     if (!response.ok) {
-      throw new Error('Failed to verify ticket');
+      const errorData = await response.json();
+      throw new Error(errorData.statusText);
     }
 
     const result = await response.json();
@@ -56,10 +177,11 @@ const handleSubmit = async (event) => {
 // Function to close the popup
 const closePopup = () => {
   showPopup.value = false
+  removeFile();
 }
 
 onMounted(() => {
-  // Any initialization logic can go here
+  fetchEvents();
 })
 </script>
 
@@ -74,24 +196,37 @@ onMounted(() => {
           <ul class="validation-box">
             <!-- Form for validation -->
             <form @submit="handleSubmit" class="validation-form">
-              <!-- Text input for user -->
-              <label for="text-input">Enter Text:</label>
+              <!-- Student ID -->
+              <label for="netID">Enter Student NetID:</label>
               <input
                 id="text-input"
                 type="text"
                 v-model="textInput"
-                placeholder="Enter Ticket Hash Here"
                 class="text-input"
               />
 
+              <!-- Event dropdown menu -->
+              <label for="event">Select Event:</label>
+              <select id="event" v-model="selectedEvent">
+                <option v-for="event in events" :key="event.id" :value="event">
+                  {{ event.title }}
+                </option>
+              </select>
+
               <!-- File input for file submission -->
-              <label for="file-input">Upload File:</label>
-              <input
-                id="file-input"
-                type="file"
-                @change="(e) => (fileInput.value = e.target.files[0])"
-                class="file-input"
-              />
+              <label for="file-input">Upload QR code:</label>
+              <div v-if="!uploadedFileName">
+                <input
+                  id="file-input"
+                  type="file"
+                  @change="handleFileUpload"
+                  class="file-input"
+                />
+              </div>
+              <div v-else class="file-display">
+                <p>{{ uploadedFileName }}</p>
+                <button type="button" @click="removeFile" class="remove-button">✕</button>
+              </div>
 
               <!-- Submit button -->
               <button type="submit" class="submit-button">Submit</button>
@@ -105,7 +240,7 @@ onMounted(() => {
     <div v-if="showPopup" class="popup-overlay">
       <div class="popup">
         <h3>Submission Successful</h3>
-        <p>Your data has been submitted successfully!</p>
+        <p>Ticket Validated</p>
         <button @click="closePopup" class="popup-button">OK</button>
       </div>
     </div>
@@ -185,13 +320,46 @@ label {
   font-size: 1.25rem; /* Updated text size for labels */
 }
 
-.text-input,
-.file-input {
+select,
+.text-input{
+  display: flex;
+  align-items: left;
   width: 100%;
   padding: 0.5rem;
   font-size: 1.25rem; /* Updated text size */
   border: 1px solid #ddd;
   border-radius: 5px;
+  background-color: white;
+}
+
+.file-input,
+.file-display {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  justify-content: space-between; /* Distribute space between input and label */
+  padding: 0.5rem 0.75rem; /* Same padding for both file input and file display */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 1.25rem;
+  color: #333;
+  width: 100%; /* Ensure it fills the width of its container */
+  box-sizing: border-box; /* Ensure padding and border are included in width calculation */
+}
+
+.file-input input {
+  width: 100%; /* Ensure the file input stretches across */
+  padding: 0.5rem 0.75rem; /* Make sure it matches the size of other inputs */
+}
+
+
+.file-display p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  color: #000E2F;
 }
 
 .submit-button {
@@ -258,4 +426,5 @@ label {
 .popup-button:hover {
   background-color: #E4002B;
 }
+
 </style>

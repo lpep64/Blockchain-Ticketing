@@ -7,6 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
+    "build": "cd vue-app && npm run build && cd ..",
+    "deploy": "node backend/blockchain/deployContract.js",
     "startfrontend": "node indexfrontonly.js",
     "startindex": "node index.js",
     "startdatabase": "node backend/backendServer.js",

@@ -104,7 +104,7 @@ app.post('/claimticket', async (req, res) => {
       const tickets = await callWithFailover('getTicketsByNetID', hashedNetID);
       for(let i = 0; i < tickets.length; i++){
         if(eventId == tickets[i].eventId){
-          throw new Error("you already have a ticket for this event");
+          throw new Error("you already have a ticket for this event, if you cant see it in your wallet it has already been validated");
         }
       }
       await callWithFailover('generateTicket', hashedNetID, eventId, seatInfo);  // Call the backend function
@@ -181,11 +181,28 @@ app.post('/unclaimticket', async (req, res) => {
 
 // Ticket verified +1 point
 app.post('/verifyticket', async (req, res) => {
-  const { netID, eventID } = req.body;
+  const { netID, eventID, QRCode } = req.body;
   try {
     const hashedNetID = Web3.utils.keccak256(netID);
-    await callWithFailover('validateTicket', hashedNetID, eventID);
+    console.log("verify ticket API received ", netID, eventID, QRCode);
+    // decode QR string
+    const parts = QRCode.split('$$$');
+    if (parts.length !== 2) {
+      throw new Error("Invalid QRString format");
+    }
+    const QRticketID = parts[0]
+    const QRNetID = parts[1]
 
+    console.log(QRNetID);
+    console.log(hashedNetID)
+
+    if(QRNetID != hashedNetID){
+      throw new Error("This ticket is not owned by the person presenting it");
+    }
+    const response = await callWithFailover('validateTicket', hashedNetID, eventID, QRticketID);
+    if(!response){
+      throw new Error("Ticket was not verified by the blockchain, you either dont have a ticket for this event or your ticket has already been validated");
+    }
     // Award points
     await pool.query(
       'UPDATE users SET pointTotal = pointTotal + 1 WHERE netID = ?',
@@ -195,7 +212,7 @@ app.post('/verifyticket', async (req, res) => {
     res.status(200).json({ message: 'Ticket verified successfully and points added!' });
   } catch (error) {
     console.error('Error verifying ticket:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
+    res.status(500).json({ statusText : error.message });
   }
 });
 
